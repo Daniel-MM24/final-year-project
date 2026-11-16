@@ -1,0 +1,1 @@
+v1: two-tier fiat pair-rate graph (median implied rate, MIN_N=30 reliability cutoff) + Bitcoin daily median rate, interpolated across gaps

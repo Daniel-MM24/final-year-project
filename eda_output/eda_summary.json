@@ -1,0 +1,11 @@
+{
+  "n_transactions":6924049,
+  "n_accounts_active":712684,
+  "n_accounts_metadata":712688,
+  "date_range":"2022-09-01 00:00:00 .. 2022-09-17 15:28:00",
+  "positive_rate_pct":0.05149,
+  "imbalance_ratio":1941,
+  "laundering_account_pct":0.7442,
+  "self_loops":804477,
+  "duplicate_rows":8
+}

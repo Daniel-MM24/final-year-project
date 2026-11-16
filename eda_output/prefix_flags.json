@@ -1,0 +1,11 @@
+{
+  "scan": "src/eda_item2_prefixes.py",
+  "width_scanned": 4,
+  "width_8_status": "degenerate - all account IDs are 9 chars, so 8-char prefixes are unique per account",
+  "base_rate_pct": 0.051487,
+  "accounts": 705903,
+  "flagged_prefixes": [
+    "8000", "8001", "8002", "8003", "8004", "8006", "8007", "8008", "800A", "800C", "8016"
+  ],
+  "note": "All flagged prefixes start with 80. 8000 is fan-out only (x3.3) with no laundering lift (x1.0); the rest are laundering-driven (x2.1-5.8). All are within the 10042B-adjacent fabricated family and must never be model inputs (rule 6)."
+}

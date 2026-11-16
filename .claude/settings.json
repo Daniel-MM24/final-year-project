@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./vault/.obsidian/**)",
+      "Read(./vault/.obsidian-mcp/**)",
+      "Read(./**/*.canvas)",
+      "Read(./data/**)",
+      "Read(./eda_output/**/*.parquet)"
+    ]
+  }
+}

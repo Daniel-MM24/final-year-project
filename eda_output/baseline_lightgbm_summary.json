@@ -1,0 +1,6 @@
+{
+  "mean_pr_auc":0.0408356131,
+  "std_pr_auc":0.0177658131,
+  "n_usable_folds":4.0,
+  "n_folds_planned":10.0
+}

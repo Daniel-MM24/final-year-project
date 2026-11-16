@@ -1,0 +1,478 @@
+{
+  "table": "edge_features_v1",
+  "version": "v1",
+  "rows": 6924049,
+  "days": [
+    "2022-09-01",
+    "2022-09-02",
+    "2022-09-03",
+    "2022-09-04",
+    "2022-09-05",
+    "2022-09-06",
+    "2022-09-07",
+    "2022-09-08",
+    "2022-09-09",
+    "2022-09-10",
+    "2022-09-11",
+    "2022-09-12",
+    "2022-09-13",
+    "2022-09-14",
+    "2022-09-15",
+    "2022-09-16",
+    "2022-09-17"
+  ],
+  "unit": "edge (one from_account -> to_account transaction)",
+  "key_columns": [
+    "from_account",
+    "to_account",
+    "date",
+    "is_laundering"
+  ],
+  "as_of_contract": "Day D features use only edges with date < D. The snapshot is updated after day D is written, so a row never sees itself or any same-day edge.",
+  "usd_rule": "amount_usd computed from eda_output/fx_usd_rate.csv (fiat) and eda_output/fx_btc_daily_rate.csv (Bitcoin); fx_pair_rates.csv never used.",
+  "deviations": [
+    {
+      "item": "velocity key",
+      "vault_stage3_says": "(from_account, to_account, amount_usd)",
+      "implemented": "(from_account, to_account) - amount not in the key",
+      "reason": "docs/data_contract.md section 6.2 measured repeats as padding; including amount in the key would count padding as new relationships.",
+      "impact": "fan/velocity counts are distinct counterparties, an upper bound on distinct amount-pairs."
+    },
+    {
+      "item": "rel_count_prior removed",
+      "detail": "Was byte-identical to from_fan_out (corr 1.0, equal arrays) because the snapshot is already as-of. Dropped to avoid duplicate signal."
+    },
+    {
+      "item": "fan_ratio not emitted",
+      "detail": "from_fan_ratio/to_fan_ratio are derivable from fan_in/fan_out and were left out of the model table; compute them downstream if a ratio is wanted."
+    },
+    {
+      "item": "timing features",
+      "detail": "from_min_gap_seconds/to_min_gap_seconds added after the fact: cache gained ts_ns (CACHE_VERSION 2) so gaps are true timestamp gaps, floored at 60 s."
+    }
+  ],
+  "findings": [
+    {
+      "feature": "bank cardinality",
+      "finding": "41,815 distinct banks in the full file; bank codes are uint16, not uint8."
+    },
+    {
+      "feature": "from_age_days / to_age_days",
+      "finding": "No within-window signal beyond the day effect. Whole-period bins show a spurious 1,149x lift in the excluded 09-11..09-17 tail (whole-file aggregate leakage, rule 4). Within 09-02..09-10 per-day lift swings 0.64x-2.05x with no monotonic age trend; median age is constant at 1-2 days for most days."
+    },
+    {
+      "feature": "from_min_gap_seconds / to_min_gap_seconds",
+      "finding": "Median 60 s - the floor binds for over half the rows, so the feature behaves as a \"acted within a minute of prior activity\" flag rather than a continuous gap. -1 marks an account with fewer than two prior edges."
+    }
+  ],
+  "features": [
+    {
+      "name": "from_txn_count",
+      "definition": "[from] Edges touching the account strictly before the current day, both directions.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 213821.0,
+      "n_unique": 423,
+      "n_zero": 1624883,
+      "n_negative": 0
+    },
+    {
+      "name": "from_amount_mean",
+      "definition": "[from] Mean amount_usd over those prior edges; 0 when txn_count is 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 3842631636.562084,
+      "n_unique": 1401377,
+      "n_zero": 1624883,
+      "n_negative": 0
+    },
+    {
+      "name": "from_amount_std",
+      "definition": "[from] Population std of amount_usd over those prior edges; 0 when txn_count < 2.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 10867708935.110712,
+      "n_unique": 1304800,
+      "n_zero": 1764954,
+      "n_negative": 0
+    },
+    {
+      "name": "from_amount_max",
+      "definition": "[from] max(amount_usd) over those prior edges; 0 when txn_count is 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 34581154295.51,
+      "n_unique": 362066,
+      "n_zero": 1624883,
+      "n_negative": 0
+    },
+    {
+      "name": "from_fan",
+      "definition": "[from] Distinct counterparties seen before today, out + in.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 19727.0,
+      "n_unique": 113,
+      "n_zero": 1624883,
+      "n_negative": 0
+    },
+    {
+      "name": "from_fan_out",
+      "definition": "[from] Distinct to_account values this account has paid before today.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 18942.0,
+      "n_unique": 69,
+      "n_zero": 1638117,
+      "n_negative": 0
+    },
+    {
+      "name": "from_fan_in",
+      "definition": "[from] Distinct from_account values that have paid this account before today.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 785.0,
+      "n_unique": 86,
+      "n_zero": 1830576,
+      "n_negative": 0
+    },
+    {
+      "name": "from_cross_bank_frac",
+      "definition": "[from] Share of prior edges with from_bank != to_bank; 0 when txn_count is 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 4690,
+      "n_zero": 1680202,
+      "n_negative": 0
+    },
+    {
+      "name": "from_age_days",
+      "definition": "[from] (current day - first day seen) in days, running min over prior days; -1 when the account has no prior appearance.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int32",
+      "observed_min": -1.0,
+      "observed_max": 16.0,
+      "n_unique": 17,
+      "n_zero": 0,
+      "n_negative": 1624883
+    },
+    {
+      "name": "from_has_history",
+      "definition": "[from] 1 if the account appeared on any day strictly before today, else 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 1624883,
+      "n_negative": 0
+    },
+    {
+      "name": "from_hop_mean_fan",
+      "definition": "[from] Mean prior-day fan over the distinct counterparties this account faces today; 0 when it has no counterparties today.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 19727.0,
+      "n_unique": 953,
+      "n_zero": 1540048,
+      "n_negative": 0
+    },
+    {
+      "name": "from_hop_max_fan",
+      "definition": "[from] Max prior-day fan over the same distinct counterparties; 0 when none.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 19727.0,
+      "n_unique": 116,
+      "n_zero": 1540048,
+      "n_negative": 0
+    },
+    {
+      "name": "to_txn_count",
+      "definition": "[to] Edges touching the account strictly before the current day, both directions.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 183423.0,
+      "n_unique": 313,
+      "n_zero": 1545472,
+      "n_negative": 0
+    },
+    {
+      "name": "to_amount_mean",
+      "definition": "[to] Mean amount_usd over those prior edges; 0 when txn_count is 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 3233104009.1764,
+      "n_unique": 1996074,
+      "n_zero": 1545472,
+      "n_negative": 0
+    },
+    {
+      "name": "to_amount_std",
+      "definition": "[to] Population std of amount_usd over those prior edges; 0 when txn_count < 2.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 4106777498.2851644,
+      "n_unique": 1961130,
+      "n_zero": 1630991,
+      "n_negative": 0
+    },
+    {
+      "name": "to_amount_max",
+      "definition": "[to] max(amount_usd) over those prior edges; 0 when txn_count is 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 11741486761.938637,
+      "n_unique": 390066,
+      "n_zero": 1545472,
+      "n_negative": 0
+    },
+    {
+      "name": "to_fan",
+      "definition": "[to] Distinct counterparties seen before today, out + in.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 19727.0,
+      "n_unique": 116,
+      "n_zero": 1545472,
+      "n_negative": 0
+    },
+    {
+      "name": "to_fan_out",
+      "definition": "[to] Distinct to_account values this account has paid before today.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 18942.0,
+      "n_unique": 61,
+      "n_zero": 1888404,
+      "n_negative": 0
+    },
+    {
+      "name": "to_fan_in",
+      "definition": "[to] Distinct from_account values that have paid this account before today.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 785.0,
+      "n_unique": 85,
+      "n_zero": 1554196,
+      "n_negative": 0
+    },
+    {
+      "name": "to_cross_bank_frac",
+      "definition": "[to] Share of prior edges with from_bank != to_bank; 0 when txn_count is 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 4365,
+      "n_zero": 1667655,
+      "n_negative": 0
+    },
+    {
+      "name": "to_age_days",
+      "definition": "[to] (current day - first day seen) in days, running min over prior days; -1 when the account has no prior appearance.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int32",
+      "observed_min": -1.0,
+      "observed_max": 16.0,
+      "n_unique": 17,
+      "n_zero": 0,
+      "n_negative": 1545472
+    },
+    {
+      "name": "to_has_history",
+      "definition": "[to] 1 if the account appeared on any day strictly before today, else 0.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 1545472,
+      "n_negative": 0
+    },
+    {
+      "name": "to_hop_mean_fan",
+      "definition": "[to] Mean prior-day fan over the distinct counterparties this account faces today; 0 when it has no counterparties today.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 19727.0,
+      "n_unique": 3170,
+      "n_zero": 1584957,
+      "n_negative": 0
+    },
+    {
+      "name": "to_hop_max_fan",
+      "definition": "[to] Max prior-day fan over the same distinct counterparties; 0 when none.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 0.0,
+      "observed_max": 19727.0,
+      "n_unique": 113,
+      "n_zero": 1584957,
+      "n_negative": 0
+    },
+    {
+      "name": "from_min_gap_seconds",
+      "definition": "[from] Smallest gap in seconds between the account's consecutive prior edges (including across midnight), floored at 60; -1 with no prior edge.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int64",
+      "observed_min": -1.0,
+      "observed_max": 703440.0,
+      "n_unique": 3541,
+      "n_zero": 0,
+      "n_negative": 1733273
+    },
+    {
+      "name": "to_min_gap_seconds",
+      "definition": "[to] Smallest gap in seconds between the account's consecutive prior edges (including across midnight), floored at 60; -1 with no prior edge.",
+      "as_of_rule": "snapshot folded forward after the day is written; only days strictly before this day contribute",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int64",
+      "observed_min": -1.0,
+      "observed_max": 752220.0,
+      "n_unique": 3383,
+      "n_zero": 0,
+      "n_negative": 1561411
+    },
+    {
+      "name": "log_amount_usd",
+      "definition": "log1p(amount_usd); fx from saved tables only (fiat daily, BTC daily), 0 unconverted.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "float64",
+      "observed_min": 9.487215982366108e-05,
+      "observed_max": 24.26657469711032,
+      "n_unique": 1729236,
+      "n_zero": 0,
+      "n_negative": 0
+    },
+    {
+      "name": "is_cross_bank",
+      "definition": "1 if from_bank != to_bank for this edge.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 912003,
+      "n_negative": 0
+    },
+    {
+      "name": "fmt_ach",
+      "definition": "1 if payment_format == \"ACH\", else 0.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 6127468,
+      "n_negative": 0
+    },
+    {
+      "name": "fmt_cash",
+      "definition": "1 if payment_format == \"Cash\", else 0.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 6268361,
+      "n_negative": 0
+    },
+    {
+      "name": "fmt_cheque",
+      "definition": "1 if payment_format == \"Cheque\", else 0.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 4420891,
+      "n_negative": 0
+    },
+    {
+      "name": "fmt_credit_card",
+      "definition": "1 if payment_format == \"Credit Card\", else 0.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 5143660,
+      "n_negative": 0
+    },
+    {
+      "name": "fmt_reinvestment",
+      "definition": "1 if payment_format == \"Reinvestment\", else 0.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 6273591,
+      "n_negative": 0
+    },
+    {
+      "name": "fmt_wire",
+      "definition": "1 if payment_format == \"Wire\", else 0.",
+      "as_of_rule": "current edge only; no prior data",
+      "null_policy": "never null; 0 when undefined (-1 for *_age_days and *_min_gap_seconds)",
+      "dtype": "int8",
+      "observed_min": 0.0,
+      "observed_max": 1.0,
+      "n_unique": 2,
+      "n_zero": 6695482,
+      "n_negative": 0
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Raw data: 800 MB of CSVs and the canonical/intermediate parquets built from them.
+# Never tracked; regenerate with the scripts in src/.
+data/
+
+# Large derived tables. The small JSON/txt artefacts in eda_output/ ARE tracked.
+eda_output/features/
+eda_output/account_features.csv
+eda_output/account_features.parquet
+
+# Per-row score tables and boosters: regenerable by re-running the ladder.
+results/ladder/*.parquet
+results/ladder/models/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Local machine state
+.openclaude/

@@ -1,0 +1,348 @@
+{
+  "n_folds": 8,
+  "n_used": 8,
+  "n_skipped": 0,
+  "skipped": {},
+  "pr_auc_mean": 0.02394706309027168,
+  "pr_auc_std": 0.01144202605946361,
+  "lift_weighted": 41.502174751349074,
+  "recall_at_k": {
+    "100": 0.02201371346084446,
+    "1000": 0.14074341392998918
+  },
+  "low_history": [
+    "fold-2022-09-03"
+  ],
+  "rung": "rung1_lgbm",
+  "saturation": {
+    "2022-09-03": {
+      "n": 283326,
+      "n_distinct": 112,
+      "largest_tie": 11041,
+      "largest_tie_frac": 0.038969243909842376,
+      "max_abs_score": 14.647371697992229,
+      "diverged": false
+    },
+    "2022-09-04": {
+      "n": 282476,
+      "n_distinct": 269863,
+      "largest_tie": 8,
+      "largest_tie_frac": 2.8320990101813958e-05,
+      "max_abs_score": 16.161122892674452,
+      "diverged": false
+    },
+    "2022-09-05": {
+      "n": 657397,
+      "n_distinct": 628026,
+      "largest_tie": 11,
+      "largest_tie_frac": 1.6732659260690267e-05,
+      "max_abs_score": 12.858485319541947,
+      "diverged": false
+    },
+    "2022-09-06": {
+      "n": 657170,
+      "n_distinct": 626890,
+      "largest_tie": 11,
+      "largest_tie_frac": 1.6738439064473423e-05,
+      "max_abs_score": 12.836142860717056,
+      "diverged": false
+    },
+    "2022-09-07": {
+      "n": 658504,
+      "n_distinct": 626569,
+      "largest_tie": 12,
+      "largest_tie_frac": 1.822312392939147e-05,
+      "max_abs_score": 13.720430580262049,
+      "diverged": false
+    },
+    "2022-09-08": {
+      "n": 657938,
+      "n_distinct": 624331,
+      "largest_tie": 10,
+      "largest_tie_frac": 1.5199000513726217e-05,
+      "max_abs_score": 12.78607248502728,
+      "diverged": false
+    },
+    "2022-09-09": {
+      "n": 891573,
+      "n_distinct": 817296,
+      "largest_tie": 457,
+      "largest_tie_frac": 0.0005125772090451371,
+      "max_abs_score": 12.896630119572205,
+      "diverged": false
+    },
+    "2022-09-10": {
+      "n": 282877,
+      "n_distinct": 271032,
+      "largest_tie": 10,
+      "largest_tie_frac": 3.5351053638153686e-05,
+      "max_abs_score": 12.460380874360947,
+      "diverged": false
+    }
+  },
+  "train_window_days": null,
+  "feature_importance": [
+    {
+      "feature": "log_amount_usd",
+      "gain_share": 0.1289973836584806
+    },
+    {
+      "feature": "from_amount_mean",
+      "gain_share": 0.0916509919160932
+    },
+    {
+      "feature": "from_txn_count",
+      "gain_share": 0.07873374916793463
+    },
+    {
+      "feature": "to_txn_count",
+      "gain_share": 0.06688023845838793
+    },
+    {
+      "feature": "from_fan_out",
+      "gain_share": 0.06514132094547045
+    },
+    {
+      "feature": "to_age_days",
+      "gain_share": 0.06437362963600594
+    },
+    {
+      "feature": "from_cross_bank_frac",
+      "gain_share": 0.0604058572679707
+    },
+    {
+      "feature": "from_fan",
+      "gain_share": 0.05353930606940207
+    },
+    {
+      "feature": "to_amount_mean",
+      "gain_share": 0.0472749252316825
+    },
+    {
+      "feature": "to_cross_bank_frac",
+      "gain_share": 0.04714404120510952
+    },
+    {
+      "feature": "to_fan_in",
+      "gain_share": 0.04359589147181066
+    },
+    {
+      "feature": "to_fan_out",
+      "gain_share": 0.041875602804547885
+    },
+    {
+      "feature": "from_amount_max",
+      "gain_share": 0.03919636664675614
+    },
+    {
+      "feature": "from_age_days",
+      "gain_share": 0.028973398146317234
+    },
+    {
+      "feature": "from_fan_in",
+      "gain_share": 0.028892223710379927
+    },
+    {
+      "feature": "to_amount_max",
+      "gain_share": 0.027585063192683633
+    },
+    {
+      "feature": "to_amount_std",
+      "gain_share": 0.02429272340807135
+    },
+    {
+      "feature": "to_fan",
+      "gain_share": 0.02279868804691621
+    },
+    {
+      "feature": "from_amount_std",
+      "gain_share": 0.018125613831647697
+    },
+    {
+      "feature": "is_cross_bank",
+      "gain_share": 0.010932274854600325
+    },
+    {
+      "feature": "to_min_gap_seconds",
+      "gain_share": 0.005506751981088876
+    },
+    {
+      "feature": "from_min_gap_seconds",
+      "gain_share": 0.004048975342428521
+    },
+    {
+      "feature": "to_has_history",
+      "gain_share": 2.6681003200408702e-05
+    },
+    {
+      "feature": "from_has_history",
+      "gain_share": 8.302003013599454e-06
+    }
+  ],
+  "features": [
+    "from_txn_count",
+    "from_amount_mean",
+    "from_amount_std",
+    "from_amount_max",
+    "from_fan",
+    "from_fan_out",
+    "from_fan_in",
+    "from_cross_bank_frac",
+    "from_age_days",
+    "from_has_history",
+    "to_txn_count",
+    "to_amount_mean",
+    "to_amount_std",
+    "to_amount_max",
+    "to_fan",
+    "to_fan_out",
+    "to_fan_in",
+    "to_cross_bank_frac",
+    "to_age_days",
+    "to_has_history",
+    "from_min_gap_seconds",
+    "to_min_gap_seconds",
+    "log_amount_usd",
+    "is_cross_bank"
+  ],
+  "lightgbm_params": {
+    "objective": "binary",
+    "metric": "average_precision",
+    "learning_rate": 0.05,
+    "num_leaves": 31,
+    "min_child_samples": 200,
+    "feature_fraction": 0.8,
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "seed": 42,
+    "deterministic": true,
+    "num_threads": 2,
+    "verbose": -1,
+    "max_bin": 63,
+    "force_col_wise": true,
+    "max_delta_step": 1.0
+  },
+  "num_boost_round": 300,
+  "folds": [
+    {
+      "name": "fold-2022-09-03",
+      "day": "2022-09-03",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 283326,
+      "n_positives": 292,
+      "base_rate": 0.0010306149100329657,
+      "pr_auc": 0.0027031923736704306,
+      "lift": 2.622892748159412,
+      "recall_at_k": {
+        "100": 0.0136986301369863,
+        "1000": 0.0273972602739726
+      }
+    },
+    {
+      "name": "fold-2022-09-04",
+      "day": "2022-09-04",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 282476,
+      "n_positives": 291,
+      "base_rate": 0.0010301760149534827,
+      "pr_auc": 0.010346802534731246,
+      "lift": 10.04372299931527,
+      "recall_at_k": {
+        "100": 0.010309278350515464,
+        "1000": 0.1134020618556701
+      }
+    },
+    {
+      "name": "fold-2022-09-05",
+      "day": "2022-09-05",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 657397,
+      "n_positives": 370,
+      "base_rate": 0.0005628258114959454,
+      "pr_auc": 0.024027826639273366,
+      "lift": 42.69140851129295,
+      "recall_at_k": {
+        "100": 0.021621621621621623,
+        "1000": 0.12702702702702703
+      }
+    },
+    {
+      "name": "fold-2022-09-06",
+      "day": "2022-09-06",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 657170,
+      "n_positives": 380,
+      "base_rate": 0.0005782369858636274,
+      "pr_auc": 0.028919371264914406,
+      "lift": 50.01300845832579,
+      "recall_at_k": {
+        "100": 0.02368421052631579,
+        "1000": 0.1736842105263158
+      }
+    },
+    {
+      "name": "fold-2022-09-07",
+      "day": "2022-09-07",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 658504,
+      "n_positives": 368,
+      "base_rate": 0.0005588424671680051,
+      "pr_auc": 0.0209580252950133,
+      "lift": 37.502563828444124,
+      "recall_at_k": {
+        "100": 0.005434782608695652,
+        "1000": 0.13858695652173914
+      }
+    },
+    {
+      "name": "fold-2022-09-08",
+      "day": "2022-09-08",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 657938,
+      "n_positives": 402,
+      "base_rate": 0.0006109998206517939,
+      "pr_auc": 0.03734882560324382,
+      "lift": 61.12739208892297,
+      "recall_at_k": {
+        "100": 0.02736318407960199,
+        "1000": 0.17164179104477612
+      }
+    },
+    {
+      "name": "fold-2022-09-09",
+      "day": "2022-09-09",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 891573,
+      "n_positives": 367,
+      "base_rate": 0.000411632025644563,
+      "pr_auc": 0.03139361312587437,
+      "lift": 76.26620663617217,
+      "recall_at_k": {
+        "100": 0.02997275204359673,
+        "1000": 0.14713896457765668
+      }
+    },
+    {
+      "name": "fold-2022-09-10",
+      "day": "2022-09-10",
+      "skipped": false,
+      "reason": "",
+      "n_validation": 282877,
+      "n_positives": 301,
+      "base_rate": 0.001064066714508426,
+      "pr_auc": 0.03587884788545252,
+      "lift": 33.718607486023764,
+      "recall_at_k": {
+        "100": 0.04318936877076412,
+        "1000": 0.2059800664451827
+      }
+    }
+  ]
+}
