@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aml-project.local/schemas/evidence_package.json",
+  "title": "Evidence package",
+  "description": "Stage 5 as-of evidence package built by src/evidence.py:build_evidence. Answers 'why is this transfer in the analyst queue?'. Every historical field is computed from rows with ts_n < the transaction's ts_ns only, so a package is byte-identical whether built from the full canonical table or one truncated at the transaction's own timestamp (asserted by tests/test_evidence_leakage.py).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["transaction", "model", "features", "context", "provenance"],
+  "properties": {
+    "transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The target transfer, read by canonical row position from data/_trans_canonical.parquet. Identity is never taken from the caller-supplied table, which may be a truncated slice.",
+      "required": [
+        "row", "from_account", "to_account", "from_bank", "to_bank",
+        "payment_format", "ts_ns", "date", "amount_usd", "golden_label"
+      ],
+      "properties": {
+        "row": {"type": "integer", "minimum": 0, "description": "Canonical table row index of the transaction."},
+        "from_account": {"type": "integer", "description": "Sender account code."},
+        "to_account": {"type": "integer", "description": "Receiver account code."},
+        "from_bank": {"type": "integer", "description": "Sender bank id."},
+        "to_bank": {"type": "integer", "description": "Receiver bank id."},
+        "payment_format": {"type": "string"},
+        "ts_ns": {"type": "integer", "description": "Transaction timestamp, epoch nanoseconds."},
+        "date": {"type": ["string", "null"], "description": "Transaction date, YYYY-MM-DD (canonical table has a 'date' column; null only if absent)."},
+        "amount_usd": {"type": "number", "description": "Amount in USD from the saved FX tables. The original amount and currency were not carried through to the canonical table and are deliberately not emitted."},
+        "golden_label": {
+          "type": ["integer", "null"],
+          "enum": [0, 1, null],
+          "description": "Ground-truth laundering label from the canonical table. Evaluation only - never a model input. null when the 'is_laundering' column is absent."
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rung 2 (LightGBM + hop features) calibrated score and its alerting position for the scored day. All score-derived fields are null when the row has no saved score.",
+      "required": ["raw_margin", "rank_in_day", "threshold", "alert", "budget"],
+      "properties": {
+        "raw_margin": {"type": ["number", "null"], "description": "Calibrated Rung 2 score from results/ladder/rung2_lgbm_plus_hop_scores.parquet; null if the row is unscored."},
+        "rank_in_day": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Rank by score among strictly earlier same-timestamp-day rows (earlier = ts_n < this transaction's ts_ns, joined from the canonical table because the scores file has no timestamp). 1 = highest. null if unscored."
+        },
+        "threshold": {"type": ["number", "null"], "description": "That day's budget-derived alert threshold (Nth-highest score for budget N alerts/day); null if no threshold row for the day/budget."},
+        "alert": {"type": ["boolean", "null"], "description": "raw_margin >= threshold. null when the threshold or score is missing."},
+        "budget": {"type": "integer", "minimum": 1, "description": "Analyst alerts-per-day budget used to derive the threshold (default 200)."}
+      }
+    },
+    "features": {
+      "type": ["object", "null"],
+      "description": "The stored 38-column edge feature vector for this row, read from eda_output/features/edge_features_v1.parquet (feature_version in provenance). SHAP drivers are not stored; any driver attribution is re-derivable from this vector. null if the features file is missing or the row is out of range.",
+      "additionalProperties": {"type": ["number", "integer", "boolean", "string", "null"]}
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "As-of neighbourhood evidence. Every sub-field is computed from rows strictly before the transaction timestamp.",
+      "required": ["sender_history", "receiver_history", "subgraph", "cycles", "fan_star", "chains"],
+      "properties": {
+        "sender_history": {"$ref": "#/$defs/account_history"},
+        "receiver_history": {"$ref": "#/$defs/account_history"},
+        "subgraph": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Two-hop account neighbourhood. inbound_to_sender covers the 2-day window (hop2); outbound_from_receiver covers the 1-day window (hop1). Each list is capped at 20 rows.",
+          "required": ["window_ns", "inbound_to_sender", "outbound_from_receiver", "truncated"],
+          "properties": {
+            "window_ns": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["hop1", "hop2"],
+              "properties": {
+                "hop1": {"type": "integer", "description": "Hop-1 look-back window in nanoseconds (1 day)."},
+                "hop2": {"type": "integer", "description": "Hop-2 look-back window in nanoseconds (2 days)."}
+              }
+            },
+            "inbound_to_sender": {"type": "array", "items": {"$ref": "#/$defs/subgraph_row"}, "maxItems": 20},
+            "outbound_from_receiver": {"type": "array", "items": {"$ref": "#/$defs/subgraph_row"}, "maxItems": 20},
+            "truncated": {"type": "boolean", "description": "True when a neighbour list hit the 20-row cap (or the sender was itself seen as a counterparty), so the neighbourhood is not exhaustive."}
+          }
+        },
+        "cycles": {
+          "type": "array",
+          "maxItems": 5,
+          "description": "Directed cycles from the sender back to the sender of length 3-6, within one day. Search breaks after the first cycle found, so this is one example path per build, not an exhaustive enumeration.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["length", "hops"],
+            "properties": {
+              "length": {"type": "integer", "minimum": 3, "maximum": 6},
+              "hops": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 6,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["from", "to", "row", "ts_ns"],
+                  "properties": {
+                    "from": {"type": "integer"},
+                    "to": {"type": "integer"},
+                    "row": {"type": "integer", "description": "Canonical row index of the cycle edge (history edge; strictly earlier than the transaction)."},
+                    "ts_ns": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fan_star": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Sender degree as-of the transaction. Fan-star flags fire at >= 20 counterparties in one direction.",
+          "required": ["out_degree", "in_degree", "fan_out_star", "fan_in_star"],
+          "properties": {
+            "out_degree": {"type": "integer", "minimum": 0, "description": "Distinct outbound transfers from the sender in history."},
+            "in_degree": {"type": "integer", "minimum": 0, "description": "Distinct inbound transfers to the sender in history."},
+            "fan_out_star": {"type": "boolean"},
+            "fan_in_star": {"type": "boolean"}
+          }
+        },
+        "chains": {
+          "type": "array",
+          "maxItems": 10,
+          "description": "Account-contiguous chains through this transaction: sender = previous receiver, consecutive hops at most 1 day apart (provenance.chain_definition). prev_hop / next_hop are null when the chain starts / ends at this transaction. this_hop.row is null because the target's row id is transaction.row.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["prev_hop", "this_hop", "next_hop", "total_hops"],
+            "properties": {
+              "prev_hop": {"anyOf": [{"$ref": "#/$defs/chain_hop"}, {"type": "null"}]},
+              "this_hop": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["from", "to", "row", "ts_ns"],
+                "properties": {
+                  "from": {"type": "integer"},
+                  "to": {"type": "integer"},
+                  "row": {"type": "null", "description": "Always null: the target transfer's id lives in transaction.row."},
+                  "ts_ns": {"type": "integer"}
+                }
+              },
+              "next_hop": {"anyOf": [{"$ref": "#/$defs/chain_hop"}, {"type": "null"}]},
+              "total_hops": {"type": "integer", "minimum": 2}
+            }
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Where every input came from and what is deliberately missing. known_gaps records absences explicitly so a reader does not read 'absent' as 'zero'.",
+      "required": [
+        "feature_version", "model_version", "scored_day", "canonical_table",
+        "score_source", "chain_definition", "as_of_rule", "known_gaps"
+      ],
+      "properties": {
+        "feature_version": {"type": "string", "description": "Feature table/version, e.g. 'edge_features_v1/v1' from docs/feature_manifest.json ('unknown' if the manifest is absent)."},
+        "model_version": {"type": ["string", "null"], "description": "SHA-256 of the per-fold Rung 2 booster used to score the day; null if the booster file is missing."},
+        "scored_day": {"type": ["string", "null"], "description": "YYYY-MM-DD of the scores-file day the row was scored under."},
+        "canonical_table": {"type": "string", "const": "data/_trans_canonical.parquet"},
+        "score_source": {"type": "string", "const": "results/ladder/rung2_lgbm_plus_hop_scores.parquet"},
+        "chain_definition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min_hops", "sender_eq_prev_receiver", "max_hop_gap_ns"],
+          "properties": {
+            "min_hops": {"type": "integer", "const": 2},
+            "sender_eq_prev_receiver": {"type": "boolean", "const": true},
+            "max_hop_gap_ns": {"type": "integer", "description": "Maximum gap between consecutive chain hops, nanoseconds (1 day)."}
+          }
+        },
+        "as_of_rule": {"type": "string", "const": "strictly earlier timestamps only (ts_n < ts_ns)"},
+        "known_gaps": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Deliberate omissions vs the Stage 5 note, dictated by what upstream stages saved."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "account_history": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "As-of sender/receiver history for one account, strictly before the transaction. null when the account has no prior activity.",
+          "required": ["first_seen_ns", "out", "in"],
+          "properties": {
+            "first_seen_ns": {"type": "integer", "description": "Earliest timestamp, epoch nanoseconds, at which the account appears (either side) in history."},
+            "out": {"$ref": "#/$defs/direction_stats"},
+            "in": {"$ref": "#/$defs/direction_stats"}
+          }
+        }
+      ]
+    },
+    "direction_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["txn_count", "amount_mean", "amount_max", "distinct_counterparties", "cross_bank_frac"],
+      "properties": {
+        "txn_count": {"type": "integer", "minimum": 0},
+        "amount_mean": {"type": "number", "description": "Mean amount_usd over transfers in this direction; 0.0 when txn_count is 0."},
+        "amount_max": {"type": "number", "description": "Max amount_usd in this direction; 0.0 when txn_count is 0."},
+        "distinct_counterparties": {"type": "integer", "minimum": 0, "description": "Distinct counterparty accounts (unique, not row count)."},
+        "cross_bank_frac": {"type": "number", "minimum": 0, "maximum": 1, "description": "Fraction of transfers where source bank != destination bank; 0.0 when txn_count is 0."}
+      }
+    },
+    "subgraph_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row", "from", "to", "ts_ns", "amount_usd"],
+      "properties": {
+        "row": {"type": "integer", "description": "Canonical row index of the history edge (never a position within a caller-supplied table)."},
+        "from": {"type": "integer"},
+        "to": {"type": "integer"},
+        "ts_ns": {"type": "integer"},
+        "amount_usd": {"type": "number"}
+      }
+    },
+    "chain_hop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "row", "ts_ns"],
+      "properties": {
+        "from": {"type": "integer"},
+        "to": {"type": "integer"},
+        "row": {"type": "integer", "description": "Canonical row index of the history edge."},
+        "ts_ns": {"type": "integer"}
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "corpus_path": "corpus/documents.jsonl",
+  "sha256": "bbc5ade5a76aee1cfe5093c053cd47b620e3f38e81cbed3681d92407d83a58d7",
+  "built": "2026-11-17",
+  "n_documents": 64,
+  "n_synthetic": 20,
+  "n_reference": 44,
+  "word_counts": {
+    "min": 42,
+    "max": 555,
+    "mean": 232.1,
+    "total": 14857
+  },
+  "chunk_words_target": 350,
+  "reference_sources": [
+    {
+      "file": "Explanatory note for revised R.16.pdf.coredownload.pdf",
+      "publisher": "Financial Action Task Force (FATF)",
+      "title": "Explanatory note for revised Recommendation 16 (wire transfers)",
+      "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/R16-explanatory-note.html",
+      "date": "2025-06",
+      "retrieved": "2026-11-17"
+    },
+    {
+      "file": "SAR-FAQs-October-2025.pdf",
+      "publisher": "FinCEN, Federal Reserve, FDIC, NCUA, OCC",
+      "title": "Frequently Asked Questions Regarding Suspicious Activity Reporting Requirements",
+      "url": "https://www.fincen.gov/resources/statutes-regulations/guidance",
+      "date": "2025-10-09",
+      "retrieved": "2026-11-17"
+    }
+  ],
+  "label": "Case documents are synthetic (IBM AML-data transactions rendered as evidence packages); they must never be presented as real-world evidence. Reference documents are verbatim public policy text, used only as background/distractor material for retrieval evaluation."
+}

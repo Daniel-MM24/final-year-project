@@ -1,0 +1,34 @@
+{"query_id": "q01", "family": "case", "text": "Top-ranked alerting transfer on 2022-09-04 from account 356377 to account 361690", "relevant": ["case:row2877246"]}
+{"query_id": "q02", "family": "case", "text": "Rank 1 alert, payment format 2, $5,412.62 from account 4512 at bank 12 to account 36545 at bank 73", "relevant": ["case:row3044518"]}
+{"query_id": "q03", "family": "case", "text": "Cross-bank transfer from bank 57 to bank 59 on 2022-09-04 for $23,350.23 with 114099 models rank", "relevant": ["case:row2959857"]}
+{"query_id": "q04", "family": "case", "text": "Transfer from account 212775 at bank 6929 to account 522900 at bank 552, amount $545.37", "relevant": ["case:row3424502"]}
+{"query_id": "q05", "family": "case", "text": "Pair of fans with fan-out star and fan-in star, 5 follow-on payment chains, $175.38", "relevant": ["case:row3582143"]}
+{"query_id": "q06", "family": "case", "text": "Transfer from bank 798 to bank 6286, amount $78.39, payment format 3", "relevant": ["case:row3576764"]}
+{"query_id": "q07", "family": "case", "text": "Fan-out star on receiver with $74.70 between accounts 3698675 and 492044", "relevant": ["case:row3698675"]}
+{"query_id": "q08", "family": "case", "text": "Rank 70 model alert with 1 follow-on chain, $140.71 from bank 10 to bank 6266", "relevant": ["case:row3844509"]}
+{"query_id": "q09", "family": "case", "text": "No fan stars, rank 111 within top-200 budget, $277.81 from account 207949", "relevant": ["case:row3910400"]}
+{"query_id": "q10", "family": "case", "text": "Three chains with fan-out and fan-in stars, rank 265746, $9,525.72 between banks 2290 and 7144", "relevant": ["case:row4416924"]}
+{"query_id": "q11", "family": "case", "text": "Intra-bank transfer from account 625 to itself at bank 29, $117.98, alerting", "relevant": ["case:row4916770"]}
+{"query_id": "q12", "family": "case", "text": "Alerting rank 382 transfer with both fan-out and fan-in stars, $346.07 from account 1 to 191517", "relevant": ["case:row4938320"]}
+{"query_id": "q13", "family": "case", "text": "Six follow-on chains, payment format 4, rank 403144, $487.93 from bank 3 to bank 54", "relevant": ["case:row4950559"]}
+{"query_id": "q14", "family": "case", "text": "Rank 92 alert, one follow-on chain, $451.52 from account 245712 to account 248912", "relevant": ["case:row5187543"]}
+{"query_id": "q15", "family": "case", "text": "Two follow-on chains with fan-out star, $4,383.85, rank 225552, banks 5 to 864", "relevant": ["case:row5387721"]}
+{"query_id": "q16", "family": "case", "text": "Largest amount in the sample: $782,690.44 payment format 2 from account 182192 at bank 532", "relevant": ["case:row5461671"]}
+{"query_id": "q17", "family": "case", "text": "Ten follow-on payment chains on 2022-09-09 from account 1 at bank 25 for $2,042.68", "relevant": ["case:row6030889"]}
+{"query_id": "q18", "family": "case", "text": "Ten chains, fan-in and fan-out stars, rank 207404, $3,604.18 from account 1 to account 159523", "relevant": ["case:row6195450"]}
+{"query_id": "q19", "family": "case", "text": "Payment format 6 transfer of $57.77 from bank 628 to bank 523 on 2022-09-09", "relevant": ["case:row6624445"]}
+{"query_id": "q20", "family": "case", "text": "$43,854.65 with payment format 3 from bank 54 to bank 586, sender account 45378", "relevant": ["case:row6745789"]}
+{"query_id": "q21", "family": "case", "text": "Which alerting cases ranked first on their day and show a fan-out star pattern?", "relevant": ["case:row2877246", "case:row3044518"]}
+{"query_id": "q22", "family": "case", "text": "Show the two top-ranked alerts on 2022-09-04 regardless of the payment format", "relevant": ["case:row2877246", "case:row3044518"]}
+{"query_id": "q23", "family": "reference", "text": "What originator information must accompany a wire transfer under Recommendation 16?", "relevant": ["ref:explanatory-note-for-revised-r-16:004", "ref:explanatory-note-for-revised-r-16:028"]}
+{"query_id": "q24", "family": "reference", "text": "What does the revised R.16 explanatory note say about payment chain roles and intermediaries?", "relevant": ["ref:explanatory-note-for-revised-r-16:016"]}
+{"query_id": "q25", "family": "reference", "text": "Which financial institutions are subject to suspicious activity reporting requirements?", "relevant": ["ref:sar-faqs-october-2025:001"]}
+{"query_id": "q26", "family": "reference", "text": "SAR filing obligations for potential structuring-related activity around the ten thousand dollar threshold", "relevant": ["ref:sar-faqs-october-2025:000"]}
+{"query_id": "q27", "family": "reference", "text": "Do banks need to file a SAR when transactions sit just below the currency transaction report threshold?", "relevant": ["ref:sar-faqs-october-2025:000", "ref:sar-faqs-october-2025:002"]}
+{"query_id": "q28", "family": "reference", "text": "What regulations govern bank SAR and currency transaction reporting citations?", "relevant": ["ref:sar-faqs-october-2025:001", "ref:sar-faqs-october-2025:003"]}
+{"query_id": "q29", "family": "distractor", "text": "Suspicious structuring activity: many small transfers split across counterparties to stay under the reporting threshold - which case shows this?", "relevant": ["case:row4950559", "case:row3582143"]}
+{"query_id": "q30", "family": "distractor", "text": "Fan-out typology case: many distinct counterparties receiving from one sender, payment format 3", "relevant": ["case:row2877246", "case:row2959857"]}
+{"query_id": "q31", "family": "distractor", "text": "Layering through chains of transactions: which case has the longest follow-on payment chain count?", "relevant": ["case:row6030889", "case:row6195450"]}
+{"query_id": "q32", "family": "distractor", "text": "Round-trip funds moving back to the same account, self transfer between identical account numbers", "relevant": ["case:row4916770"]}
+{"query_id": "q33", "family": "distractor", "text": "Cross-border wire transfer record with beneficiary information, amount just over forty-three thousand dollars", "relevant": ["case:row6745789"]}
+{"query_id": "q34", "family": "distractor", "text": "Structuring alerts on the same day for two different senders both ranking first within the alert budget", "relevant": ["case:row2877246", "case:row3044518"]}
