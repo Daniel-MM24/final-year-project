@@ -31,8 +31,38 @@ QUERIES_PATH = PROJECT_ROOT / "corpus" / "queries.jsonl"
 OUT_DIR = PROJECT_ROOT / "results" / "retrieval"
 OUT_PATH = OUT_DIR / "summary.json"
 LABEL_PATH = PROJECT_ROOT / "corpus" / "corpus_label.json"
+BGE_DIR = PROJECT_ROOT / "models" / "bge-small-en-v1.5"
+BGE_OUT_PATH = OUT_DIR / "summary_bge.json"
 
 K = 5
+
+
+def bge_embed_fn():
+    """Load BAAI/bge-small-en-v1.5 locally and return a str -> 384-d vector function.
+
+    Cached: the corpus is embedded once at index build, so per-call model loads would
+    dominate. Query side adds the BGE retrieval instruction prefix; documents do not,
+    matching the model card.
+    """
+    import torch
+    from transformers import AutoModel, AutoTokenizer
+
+    torch.set_num_threads(2)
+    tok = AutoTokenizer.from_pretrained(BGE_DIR)
+    model = AutoModel.from_pretrained(BGE_DIR).eval()
+    cache: dict[str, object] = {}
+
+    def embed(text: str):
+        if text not in cache:
+            batch = tok([text], padding=True, truncation=True, max_length=512,
+                        return_tensors="pt")
+            with torch.no_grad():
+                hidden = model(**batch).last_hidden_state[:, 0]
+            vec = torch.nn.functional.normalize(hidden, dim=-1)[0].numpy()
+            cache[text] = vec
+        return cache[text]
+
+    return embed
 
 
 def load_documents() -> list[rt.Document]:
@@ -81,13 +111,14 @@ def by_family(per_query: list[dict], families: dict[str, str]) -> dict[str, dict
     return dict(sorted(out.items()))
 
 
-def main() -> int:
+def main(use_bge: bool = False) -> int:
     docs = load_documents()
     queries = load_queries()
     families = load_families()
     check_gold(docs, queries)
 
-    index = rt.HybridIndex(docs)
+    index = rt.HybridIndex(docs, embed_fn=bge_embed_fn()) if use_bge \
+        else rt.HybridIndex(docs)
     report = rt.evaluate(index, queries, k=K)
 
     # Channel ablations: how much does each channel actually contribute?
@@ -128,8 +159,11 @@ def main() -> int:
                   "results are not real-world evidence of retriever quality."),
     }
 
+    out_path = BGE_OUT_PATH if use_bge else OUT_PATH
+    if use_bge:
+        payload["dense_channel"] = "BAAI/bge-small-en-v1.5 (CLS embedding, L2)"
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    OUT_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
     print(f"documents {len(docs)}  queries {len(queries)}  k {K}")
     print(f"hybrid     recall@{K} {payload[f'recall_at_{K}']:.4f}  mrr {payload['mrr']:.4f}")
@@ -144,9 +178,9 @@ def main() -> int:
     for r in sorted(weak, key=lambda x: x["mrr"]):
         print(f"  {r['query_id']}  r@{K}={r[f'recall_at_{K}']:.2f} mrr={r['mrr']:.3f}"
               f"  gold={r['n_relevant']}  top={r['top'][:3]}")
-    print(f"\nwrote {OUT_PATH.relative_to(PROJECT_ROOT)}")
+    print(f"\nwrote {out_path.relative_to(PROJECT_ROOT)}")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(use_bge="--bge" in sys.argv[1:]))

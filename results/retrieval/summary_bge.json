@@ -1,0 +1,519 @@
+{
+  "corpus_sha256": "bbc5ade5a76aee1cfe5093c053cd47b620e3f38e81cbed3681d92407d83a58d7",
+  "k": 5,
+  "n_documents": 64,
+  "n_queries": 34,
+  "recall_at_5": 0.7647,
+  "mrr": 0.7485,
+  "by_family": {
+    "case": {
+      "n_queries": 22,
+      "recall_at_5": 0.9545,
+      "mrr": 0.9545
+    },
+    "distractor": {
+      "n_queries": 6,
+      "recall_at_5": 0.0833,
+      "mrr": 0.1667
+    },
+    "reference": {
+      "n_queries": 6,
+      "recall_at_5": 0.75,
+      "mrr": 0.575
+    }
+  },
+  "ablations": {
+    "bm25_only": {
+      "recall_at_5": 0.7647,
+      "mrr": 0.7338
+    },
+    "dense_only": {
+      "recall_at_5": 0.6912,
+      "mrr": 0.5662
+    },
+    "hybrid": {
+      "recall_at_5": 0.7647,
+      "mrr": 0.7485
+    }
+  },
+  "per_query": [
+    {
+      "query_id": "q01",
+      "text": "Top-ranked alerting transfer on 2022-09-04 from account 356377 to account 361690",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row2877246",
+        "case:row2959857",
+        "case:row3044518",
+        "case:row6030889",
+        "case:row6195450"
+      ]
+    },
+    {
+      "query_id": "q02",
+      "text": "Rank 1 alert, payment format 2, $5,412.62 from account 4512 at bank 12 to account 36545 at bank 73",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3044518",
+        "case:row3576764",
+        "case:row5187543",
+        "case:row5387721",
+        "case:row4916770"
+      ]
+    },
+    {
+      "query_id": "q03",
+      "text": "Cross-bank transfer from bank 57 to bank 59 on 2022-09-04 for $23,350.23 with 114099 models rank",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row2959857",
+        "case:row2877246",
+        "case:row6624445",
+        "case:row6195450",
+        "case:row5461671"
+      ]
+    },
+    {
+      "query_id": "q04",
+      "text": "Transfer from account 212775 at bank 6929 to account 522900 at bank 552, amount $545.37",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3424502",
+        "case:row2877246",
+        "case:row6624445",
+        "case:row5461671",
+        "case:row5187543"
+      ]
+    },
+    {
+      "query_id": "q05",
+      "text": "Pair of fans with fan-out star and fan-in star, 5 follow-on payment chains, $175.38",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3582143",
+        "case:row3044518",
+        "case:row3576764",
+        "case:row5187543",
+        "case:row4416924"
+      ]
+    },
+    {
+      "query_id": "q06",
+      "text": "Transfer from bank 798 to bank 6286, amount $78.39, payment format 3",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3576764",
+        "case:row6030889",
+        "case:row6195450",
+        "case:row4938320",
+        "case:row6745789"
+      ]
+    },
+    {
+      "query_id": "q07",
+      "text": "Fan-out star on receiver with $74.70 between accounts 3698675 and 492044",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3698675",
+        "case:row6030889",
+        "case:row3844509",
+        "case:row4950559",
+        "case:row3582143"
+      ]
+    },
+    {
+      "query_id": "q08",
+      "text": "Rank 70 model alert with 1 follow-on chain, $140.71 from bank 10 to bank 6266",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3844509",
+        "case:row6030889",
+        "case:row3698675",
+        "case:row2959857",
+        "case:row5187543"
+      ]
+    },
+    {
+      "query_id": "q09",
+      "text": "No fan stars, rank 111 within top-200 budget, $277.81 from account 207949",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3910400",
+        "case:row5387721",
+        "case:row4938320",
+        "case:row3582143",
+        "case:row4916770"
+      ]
+    },
+    {
+      "query_id": "q10",
+      "text": "Three chains with fan-out and fan-in stars, rank 265746, $9,525.72 between banks 2290 and 7144",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row4416924",
+        "case:row4916770",
+        "case:row2959857",
+        "case:row3698675",
+        "case:row5387721"
+      ]
+    },
+    {
+      "query_id": "q11",
+      "text": "Intra-bank transfer from account 625 to itself at bank 29, $117.98, alerting",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row4916770",
+        "case:row3844509",
+        "case:row2959857",
+        "case:row4950559",
+        "case:row3582143"
+      ]
+    },
+    {
+      "query_id": "q12",
+      "text": "Alerting rank 382 transfer with both fan-out and fan-in stars, $346.07 from account 1 to 191517",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row4938320",
+        "case:row2959857",
+        "case:row4916770",
+        "case:row4950559",
+        "case:row3424502"
+      ]
+    },
+    {
+      "query_id": "q13",
+      "text": "Six follow-on chains, payment format 4, rank 403144, $487.93 from bank 3 to bank 54",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row4950559",
+        "case:row6624445",
+        "case:row6745789",
+        "case:row3844509",
+        "case:row5387721"
+      ]
+    },
+    {
+      "query_id": "q14",
+      "text": "Rank 92 alert, one follow-on chain, $451.52 from account 245712 to account 248912",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row5187543",
+        "case:row4416924",
+        "case:row4938320",
+        "case:row3698675",
+        "case:row6624445"
+      ]
+    },
+    {
+      "query_id": "q15",
+      "text": "Two follow-on chains with fan-out star, $4,383.85, rank 225552, banks 5 to 864",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row5387721",
+        "case:row3576764",
+        "case:row3582143",
+        "case:row5187543",
+        "case:row4416924"
+      ]
+    },
+    {
+      "query_id": "q16",
+      "text": "Largest amount in the sample: $782,690.44 payment format 2 from account 182192 at bank 532",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row5461671",
+        "case:row3910400",
+        "case:row2877246",
+        "case:row5187543",
+        "case:row5387721"
+      ]
+    },
+    {
+      "query_id": "q17",
+      "text": "Ten follow-on payment chains on 2022-09-09 from account 1 at bank 25 for $2,042.68",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row6030889",
+        "case:row3844509",
+        "case:row5461671",
+        "case:row5187543",
+        "case:row6195450"
+      ]
+    },
+    {
+      "query_id": "q18",
+      "text": "Ten chains, fan-in and fan-out stars, rank 207404, $3,604.18 from account 1 to account 159523",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row6195450",
+        "case:row2877246",
+        "case:row2959857",
+        "case:row4416924",
+        "case:row4938320"
+      ]
+    },
+    {
+      "query_id": "q19",
+      "text": "Payment format 6 transfer of $57.77 from bank 628 to bank 523 on 2022-09-09",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row6624445",
+        "case:row6195450",
+        "case:row2959857",
+        "case:row4416924",
+        "case:row4950559"
+      ]
+    },
+    {
+      "query_id": "q20",
+      "text": "$43,854.65 with payment format 3 from bank 54 to bank 586, sender account 45378",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row6745789",
+        "case:row5387721",
+        "case:row3044518",
+        "case:row4950559",
+        "case:row6195450"
+      ]
+    },
+    {
+      "query_id": "q21",
+      "text": "Which alerting cases ranked first on their day and show a fan-out star pattern?",
+      "n_relevant": 2,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "case:row5461671",
+        "case:row5187543",
+        "case:row3698675",
+        "case:row5387721",
+        "case:row4916770"
+      ]
+    },
+    {
+      "query_id": "q22",
+      "text": "Show the two top-ranked alerts on 2022-09-04 regardless of the payment format",
+      "n_relevant": 2,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "case:row3044518",
+        "case:row2959857",
+        "case:row2877246",
+        "case:row6030889",
+        "case:row6195450"
+      ]
+    },
+    {
+      "query_id": "q23",
+      "text": "What originator information must accompany a wire transfer under Recommendation 16?",
+      "n_relevant": 2,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "ref:explanatory-note-for-revised-r-16:028",
+        "ref:explanatory-note-for-revised-r-16:029",
+        "ref:explanatory-note-for-revised-r-16:004",
+        "ref:explanatory-note-for-revised-r-16:036",
+        "ref:explanatory-note-for-revised-r-16:005"
+      ]
+    },
+    {
+      "query_id": "q24",
+      "text": "What does the revised R.16 explanatory note say about payment chain roles and intermediaries?",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 0.2,
+      "top": [
+        "ref:explanatory-note-for-revised-r-16:000",
+        "ref:explanatory-note-for-revised-r-16:003",
+        "ref:explanatory-note-for-revised-r-16:008",
+        "ref:explanatory-note-for-revised-r-16:021",
+        "ref:explanatory-note-for-revised-r-16:016"
+      ]
+    },
+    {
+      "query_id": "q25",
+      "text": "Which financial institutions are subject to suspicious activity reporting requirements?",
+      "n_relevant": 1,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "ref:sar-faqs-october-2025:004",
+        "ref:sar-faqs-october-2025:002",
+        "ref:sar-faqs-october-2025:000",
+        "ref:sar-faqs-october-2025:005",
+        "ref:sar-faqs-october-2025:006"
+      ]
+    },
+    {
+      "query_id": "q26",
+      "text": "SAR filing obligations for potential structuring-related activity around the ten thousand dollar threshold",
+      "n_relevant": 1,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "ref:sar-faqs-october-2025:000",
+        "ref:sar-faqs-october-2025:004",
+        "ref:sar-faqs-october-2025:002",
+        "ref:sar-faqs-october-2025:005",
+        "ref:sar-faqs-october-2025:006"
+      ]
+    },
+    {
+      "query_id": "q27",
+      "text": "Do banks need to file a SAR when transactions sit just below the currency transaction report threshold?",
+      "n_relevant": 2,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "top": [
+        "ref:sar-faqs-october-2025:002",
+        "ref:sar-faqs-october-2025:000",
+        "ref:sar-faqs-october-2025:004",
+        "ref:sar-faqs-october-2025:006",
+        "ref:sar-faqs-october-2025:005"
+      ]
+    },
+    {
+      "query_id": "q28",
+      "text": "What regulations govern bank SAR and currency transaction reporting citations?",
+      "n_relevant": 2,
+      "recall_at_5": 0.5,
+      "mrr": 0.25,
+      "top": [
+        "ref:sar-faqs-october-2025:002",
+        "ref:sar-faqs-october-2025:000",
+        "ref:sar-faqs-october-2025:006",
+        "ref:sar-faqs-october-2025:001",
+        "ref:sar-faqs-october-2025:004"
+      ]
+    },
+    {
+      "query_id": "q29",
+      "text": "Suspicious structuring activity: many small transfers split across counterparties to stay under the reporting threshold - which case shows this?",
+      "n_relevant": 2,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "ref:sar-faqs-october-2025:002",
+        "ref:sar-faqs-october-2025:003",
+        "ref:sar-faqs-october-2025:000",
+        "ref:explanatory-note-for-revised-r-16:008",
+        "ref:explanatory-note-for-revised-r-16:007"
+      ]
+    },
+    {
+      "query_id": "q30",
+      "text": "Fan-out typology case: many distinct counterparties receiving from one sender, payment format 3",
+      "n_relevant": 2,
+      "recall_at_5": 0.5,
+      "mrr": 1.0,
+      "top": [
+        "case:row2959857",
+        "case:row4950559",
+        "case:row3576764",
+        "case:row3844509",
+        "case:row5461671"
+      ]
+    },
+    {
+      "query_id": "q31",
+      "text": "Layering through chains of transactions: which case has the longest follow-on payment chain count?",
+      "n_relevant": 2,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "ref:explanatory-note-for-revised-r-16:016",
+        "ref:explanatory-note-for-revised-r-16:019",
+        "ref:explanatory-note-for-revised-r-16:035",
+        "ref:explanatory-note-for-revised-r-16:008",
+        "ref:explanatory-note-for-revised-r-16:017"
+      ]
+    },
+    {
+      "query_id": "q32",
+      "text": "Round-trip funds moving back to the same account, self transfer between identical account numbers",
+      "n_relevant": 1,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "ref:explanatory-note-for-revised-r-16:036",
+        "ref:explanatory-note-for-revised-r-16:006",
+        "ref:explanatory-note-for-revised-r-16:027",
+        "ref:explanatory-note-for-revised-r-16:025",
+        "ref:explanatory-note-for-revised-r-16:024"
+      ]
+    },
+    {
+      "query_id": "q33",
+      "text": "Cross-border wire transfer record with beneficiary information, amount just over forty-three thousand dollars",
+      "n_relevant": 1,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "ref:explanatory-note-for-revised-r-16:031",
+        "ref:explanatory-note-for-revised-r-16:028",
+        "ref:explanatory-note-for-revised-r-16:029",
+        "ref:explanatory-note-for-revised-r-16:026",
+        "ref:explanatory-note-for-revised-r-16:036"
+      ]
+    },
+    {
+      "query_id": "q34",
+      "text": "Structuring alerts on the same day for two different senders both ranking first within the alert budget",
+      "n_relevant": 2,
+      "recall_at_5": 0.0,
+      "mrr": 0.0,
+      "top": [
+        "ref:sar-faqs-october-2025:003",
+        "ref:sar-faqs-october-2025:002",
+        "ref:explanatory-note-for-revised-r-16:033",
+        "case:row5461671",
+        "case:row5187543"
+      ]
+    }
+  ],
+  "label": "Synthetic case documents (IBM AML-data transactions rendered as evidence packages) plus real public policy text as background; results are not real-world evidence of retriever quality.",
+  "dense_channel": "BAAI/bge-small-en-v1.5 (CLS embedding, L2)"
+}
