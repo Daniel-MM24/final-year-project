@@ -1,0 +1,386 @@
+{
+ "draft": {
+  "alert_id": "4416924",
+  "counter_evidence": [
+   {
+    "citations": [
+     "model.alert",
+     "model.raw_margin",
+     "model.rank_in_day",
+     "model.budget"
+    ],
+    "text": "The model did not alert on this row (alert false, raw margin -5.929850789926392, rank_in_day 265746 against a budget of 200), so the alerting signal is weak relative to the day's population."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The golden label is 0 and is_laundering is 0, which is evidence against a confirmed laundering determination for this row."
+   },
+   {
+    "citations": [
+     "find_cycles:call_00_Brh5d24IXsWFb0IbhS2162",
+     "context.cycles"
+    ],
+    "text": "No directed cycles were found through 311052, so a closed round-trip (funds returning to origin) is not evidenced; the observed structure is a linear chain, not a cycle."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps",
+     "transaction.payment_format"
+    ],
+    "text": "The repeated amounts could reflect scheduled or recurring payments (e.g. payroll, subscription or invoice batches) rather than layering; the package contains no counterparty names, purpose codes or memo fields to distinguish these."
+   },
+   {
+    "citations": [
+     "ref:sar-faqs-october-2025:002",
+     "features.fmt_ach",
+     "features.fmt_cash"
+    ],
+    "text": "The corpus passages retrieved on structuring concern currency transactions and CTR thresholds; the alert transaction is ACH (fmt_ach = 1, fmt_cash = 0), so the structuring passages do not directly apply and no cash structuring typology is supported here."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "The original amount and currency are not carried through to the canonical table, so USD figures cannot be reconciled to source payment instructions."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "No SHAP drivers are stored, so the model's reasoning for this row cannot be inspected directly."
+   }
+  ],
+  "flags": [
+   "tool result injection-like text in search_corpus:call_02_9yWWXIfO6cfqnAuNEafu0825: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_02_9yWWXIfO6cfqnAuNEafu0825:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_02_9yWWXIfO6cfqnAuNEafu0825: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 0.963942}, ",
+   "tool result injection-like text in search_corpus:call_02_9yWWXIfO6cfqnAuNEafu0825:  Is a financial institution required to file a SAR for a transaction or a series of transa",
+   "tool result injection-like text in search_corpus:call_02_9yWWXIfO6cfqnAuNEafu0825: ncial institutions are only required to file a SAR if the institution knows, suspects, or ",
+   "call budget of 8 exhausted; get_bank_stats not executed",
+   "Tool results were wrapped in an untrusted-data banner; no instruction-like content was found in any field value or retrieved passage.",
+   "get_bank_stats for bank 7144 was not executed because the 8-call budget was exhausted; bank-level context is therefore absent from this draft.",
+   "Both get_account_history results for accounts 311052 and 308639 were truncated, so their histories are incomplete in this draft."
+  ],
+  "hypothesised_typology": [
+   {
+    "citations": [
+     "call_00_bfQGTEOuSUplMZXIeF8P0005",
+     "call_01_vTPDTXZnvbbhreLBwM7l3525",
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109",
+     "call_01_8c0IPhgaa1Nwk1SZufbr3281"
+    ],
+    "text": "Hypothesis: a repeating pass-through / layering chain in which funds are collected at 311052 from a small-amount feeder (308639), consolidated and pushed to 311417, then re-broken into a fixed three-transfer set and forwarded to 314950. The repeated use of identical amounts across days is consistent with deliberate value-preserving layering rather than ordinary commercial payment behaviour."
+   },
+   {
+    "citations": [
+     "ref:explanatory-note-for-revised-r-16:016"
+    ],
+    "text": "The corpus describes the related structural risk of payment chains being fragmented into discrete transfers so that institutions in the chain lack full originator/beneficiary information, which impedes screening and monitoring."
+   },
+   {
+    "citations": [
+     "ref:explanatory-note-for-revised-r-16:017"
+    ],
+    "text": "The corpus also notes the typology of a payment sent through a financial institution with which the customer does not maintain the account holding the funds, so the true origin of funds is not indicated in the payment message."
+   }
+  ],
+  "label": "DRAFT for investigator review",
+  "missing": [],
+  "observed_facts": [
+   {
+    "citations": [
+     "transaction.amount_usd",
+     "transaction.from_account",
+     "transaction.to_account",
+     "transaction.from_bank",
+     "transaction.to_bank",
+     "transaction.ts_ns",
+     "transaction.payment_format",
+     "features.is_cross_bank"
+    ],
+    "text": "The alert transaction is 9525.716841890004 USD, from account 311052 at bank 2290 to account 311417 at bank 7144, timestamp 1662506880000000000, payment format \"3\", cross-bank (is_cross_bank = 1)."
+   },
+   {
+    "citations": [
+     "call_00_bfQGTEOuSUplMZXIeF8P0005"
+    ],
+    "text": "The same amount 9525.716841890004 USD appears as an outbound transfer from 311052 to 311417 on 2022-09-01 15:36 (row 1152890), 2022-09-02 01:18 (row 1603053), 2022-09-04 15:29 (row 3024498) and 2022-09-05 00:53 (row 3162406)."
+   },
+   {
+    "citations": [
+     "call_00_bfQGTEOuSUplMZXIeF8P0005",
+     "call_01_vTPDTXZnvbbhreLBwM7l3525"
+    ],
+    "text": "A second recurring amount, 17836.67006027075 USD, also moves from 311052 to 311417 on 2022-09-01 15:36 (row 1152891), 2022-09-02 01:13 (row 1603054), 2022-09-03 18:36 (row 2779540), 2022-09-04 15:28 (row 3024499) and 2022-09-05 00:35 (row 3162407)."
+   },
+   {
+    "citations": [
+     "call_01_vTPDTXZnvbbhreLBwM7l3525",
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109"
+    ],
+    "text": "Account 311417 forwards to account 314950 (bank 7147) in a repeating three-transfer set of 39658.834813398746, 12522.281028652007 and 9327.04724803591 USD, seen on 2022-09-01 (rows 992223, 992224, 992225), 2022-09-02 (rows 2527225, 2527226, 2527227) and 2022-09-05 (rows 3678699, 3678700, 3678701)."
+   },
+   {
+    "citations": [
+     "call_01_vTPDTXZnvbbhreLBwM7l3525"
+    ],
+    "text": "On 2022-09-05 the inbound legs to 311417 (17836.67006027075 at 00:35 and 9525.716841890004 at 00:53) precede the outbound legs to 314950 (9327.04724803591 at 20:07, 12522.281028652007 at 20:14, 39658.834813398746 at 20:20) by roughly 19 hours."
+   },
+   {
+    "citations": [
+     "call_00_bfQGTEOuSUplMZXIeF8P0005",
+     "call_01_8c0IPhgaa1Nwk1SZufbr3281"
+    ],
+    "text": "Account 311052 also receives a repeating three-transfer set of small amounts from account 308639 (bank 20): 82.6272278710507, 74.30896388028056 and 113.29113891777173 USD, on 2022-09-02, 2022-09-03, 2022-09-04 and 2022-09-05."
+   },
+   {
+    "citations": [
+     "call_01_8c0IPhgaa1Nwk1SZufbr3281"
+    ],
+    "text": "Account 308639 shows the same repeating small-amount pattern toward other counterparties, e.g. 42.37923005235538, 140.91965860140115, 120.62774442515908 and 14.854042840660984 USD to account 317439 (bank 6485) on 2022-09-03, 2022-09-04 and 2022-09-05."
+   },
+   {
+    "citations": [
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109"
+    ],
+    "text": "Account 314950 receives the repeating three-transfer set from 311417 and also receives a repeating two-transfer set from account 310483 (bank 21) of 444.3812955566092 and 199.75458480941055 USD on 2022-09-01, 2022-09-02 and 2022-09-05."
+   },
+   {
+    "citations": [
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109"
+    ],
+    "text": "Account 314950 has outbound transfers to account 316218 (bank 7154) on 2022-09-01: 14723.521012048046, 17945.582485690273 and 10743.231692464527 USD."
+   },
+   {
+    "citations": [
+     "context.fan_star.fan_in_star",
+     "context.fan_star.fan_out_star",
+     "context.fan_star.in_degree",
+     "context.fan_star.out_degree",
+     "context.chains[0].total_hops",
+     "context.chains[0].prev_hop.from",
+     "context.chains[0].this_hop.to"
+    ],
+    "text": "The package records fan_in_star true and fan_out_star true with in_degree 24 and out_degree 36, and three two-hop chains 308639 -> 311052 -> 311417 with no next hop."
+   },
+   {
+    "citations": [
+     "find_cycles:call_00_Brh5d24IXsWFb0IbhGhS2162",
+     "context.cycles"
+    ],
+    "text": "No directed cycles were found through account 311052 as of 2022-09-06 (n_matching 0), and the package lists cycles as empty."
+   },
+   {
+    "citations": [
+     "context.sender_history.out.txn_count",
+     "context.sender_history.out.amount_mean",
+     "context.sender_history.out.amount_max",
+     "context.sender_history.out.distinct_counterparties",
+     "context.sender_history.out.cross_bank_frac",
+     "context.sender_history.in.txn_count",
+     "context.sender_history.in.amount_mean",
+     "context.sender_history.in.amount_max",
+     "context.sender_history.in.distinct_counterparties"
+    ],
+    "text": "Sender history for 311052: 36 outgoing transfers (mean 5256.551550799552, max 17836.67006027075, 4 distinct counterparties, cross-bank fraction 0.9722222222222222) and 24 incoming (mean 1474.9171145446082, max 11600.865376407317, 5 counterparties)."
+   },
+   {
+    "citations": [
+     "context.receiver_history.out.txn_count",
+     "context.receiver_history.out.amount_mean",
+     "context.receiver_history.out.amount_max",
+     "context.receiver_history.out.distinct_counterparties",
+     "context.receiver_history.in.txn_count",
+     "context.receiver_history.in.amount_mean",
+     "context.receiver_history.in.amount_max",
+     "context.receiver_history.in.distinct_counterparties"
+    ],
+    "text": "Receiver history for 311417: 13 outgoing transfers (mean 18926.565333679664, max 39658.834813398746, 2 distinct counterparties) and 20 incoming (mean 7854.529814876009, max 17836.67006027075, 3 counterparties)."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "context.sender_history.first_seen_ns",
+     "context.receiver_history.first_seen_ns"
+    ],
+    "text": "Both accounts are young: from_age_days 5 and to_age_days 5, with first_seen_ns 1661990580000000000 for the sender and 1661991660000000000 for the receiver."
+   },
+   {
+    "citations": [
+     "features.fmt_ach",
+     "features.fmt_cash",
+     "features.fmt_cheque",
+     "features.fmt_credit_card",
+     "features.fmt_reinvestment",
+     "features.fmt_wire"
+    ],
+    "text": "The transaction is ACH (fmt_ach = 1) with no cash, cheque, credit card, reinvestment or wire format flags set."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The golden label for this row is 0 and is_laundering is 0."
+   }
+  ],
+  "recommended_next_steps": [
+   {
+    "citations": [
+     "transaction.from_account",
+     "transaction.to_account",
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109",
+     "call_01_8c0IPhgaa1Nwk1SZufbr3281"
+    ],
+    "text": "Pull full KYC and onboarding records for accounts 311052, 311417, 314950 and 308639, including beneficial ownership and stated business purpose, to test whether the recurring fixed-amount sets are consistent with the declared activity."
+   },
+   {
+    "citations": [
+     "call_00_bfQGTEOuSUplMZXIeF8P0005",
+     "provenance.known_gaps"
+    ],
+    "text": "Obtain payment purpose codes, remittance memos and any invoice or contract documentation behind the recurring 9525.716841890004 and 17836.67006027075 transfers from 311052 to 311417."
+   },
+   {
+    "citations": [
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109",
+     "find_cycles:call_00_Brh5d24IXsWFb0IbhS2162"
+    ],
+    "text": "Request the downstream history of account 314950 beyond 2022-09-06 and of account 316218, to determine whether funds continue to move and whether any value returns to 311052 or 308639."
+   },
+   {
+    "citations": [
+     "call_01_8c0IPhgaa1Nwk1SZufbr3281",
+     "call_00_bfQGTEOuSUplMZXIeF8P0005"
+    ],
+    "text": "Review the full (untruncated) history of account 308639 and 311052, since both tool results were truncated, to confirm the total volume and counterparty set of the feeder pattern."
+   },
+   {
+    "citations": [
+     "model.alert",
+     "transaction.golden_label"
+    ],
+    "text": "Have a human reviewer assess whether the recurring fixed-amount sets meet the institution's own escalation criteria; no escalation, closure or filing has been performed in this draft."
+   }
+  ],
+  "run_id": "20261124T121637Z-61524",
+  "schema_version": "1.0",
+  "status": "draft",
+  "summary": [
+   {
+    "citations": [
+     "transaction.amount_usd",
+     "transaction.from_account",
+     "transaction.to_account",
+     "transaction.from_bank",
+     "transaction.to_bank",
+     "transaction.payment_format",
+     "transaction.date"
+    ],
+    "text": "Alert 4416924 concerns a cross-bank transfer of 9525.716841890004 USD on 2022-09-06 from account 311052 (bank 2290) to account 311417 (bank 7144), payment format \"3\"."
+   },
+   {
+    "citations": [
+     "model.alert",
+     "model.raw_margin",
+     "model.threshold",
+     "model.rank_in_day",
+     "model.budget"
+    ],
+    "text": "The model did not alert on this row: alert flag is false, raw margin -5.929850789926392 against a threshold of 0.1336053800620123, with rank_in_day 265746 against a budget of 200."
+   },
+   {
+    "citations": [
+     "context.sender_history.out.amount_max",
+     "context.receiver_history.out.amount_max",
+     "call_00_bfQGTEOuSUplMZXIeF8P0005",
+     "call_01_vTPDTXZnvbbhreLBwM7l3525"
+    ],
+    "text": "The pattern that stands out is not the single alert row but a repeating two-leg cycle of near-identical amounts: 311052 sends 9525.716841890004 and 17836.67006027075 to 311417 on multiple days, and 311417 forwards 39658.834813398746, 12522.281028652007 and 9327.04724803591 to 314950 shortly afterwards."
+   }
+  ],
+  "supporting_evidence": [
+   {
+    "citations": [
+     "call_00_bfQGTEOuSUplMZXIeF8P0005",
+     "call_01_vTPDTXZnvbbhreLBwM7l3525",
+     "call_00_Qg95dGAW1sfKhP4T4Ff84109"
+    ],
+    "text": "Identical amounts recur across multiple days on both legs: 9525.716841890004 and 17836.67006027075 from 311052 to 311417, and 39658.834813398746 / 12522.281028652007 / 9327.04724803591 from 311417 to 314950."
+   },
+   {
+    "citations": [
+     "call_01_vTPDTXZnvbbhreLBwM7l3525",
+     "context.receiver_history.out.amount_max",
+     "context.receiver_history.in.amount_max"
+    ],
+    "text": "The outbound leg from 311417 to 314950 is larger than the inbound leg from 311052 on the same day (39658.834813398746 vs 17836.67006027075), so 311417 is not merely forwarding a single matched payment; it aggregates and re-splits."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "context.sender_history.out.cross_bank_frac",
+     "context.receiver_history.out.cross_bank_frac"
+    ],
+    "text": "Both accounts are only 5 days old at the alert date and transact almost entirely cross-bank (sender out cross-bank fraction 0.9722222222222222, receiver out 0.9230769230769231)."
+   },
+   {
+    "citations": [
+     "context.fan_star.fan_in_star",
+     "context.fan_star.fan_out_star",
+     "context.fan_star.in_degree",
+     "context.fan_star.out_degree"
+    ],
+    "text": "The fan structure is present on both sides (fan_in_star true, fan_out_star true, in_degree 24, out_degree 36), consistent with a hub used to collect and redistribute."
+   },
+   {
+    "citations": [
+     "call_01_8c0IPhgaa1Nwk1SZufbr3281"
+    ],
+    "text": "The feeder 308639 shows the same fixed small-amount sets toward multiple counterparties, suggesting a scripted rather than organic payment pattern."
+   }
+  ]
+ },
+ "log_path": "results/agent/logs/alert_4416924__run_20261124T121637Z-61524.jsonl",
+ "problems": [
+  "summary[2]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "summary[2]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "observed_facts[1]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "observed_facts[2]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "observed_facts[2]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "observed_facts[3]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "observed_facts[3]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "observed_facts[4]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "observed_facts[5]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "observed_facts[5]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'",
+  "observed_facts[6]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'",
+  "observed_facts[7]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "observed_facts[8]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "hypothesised_typology[0]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "hypothesised_typology[0]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "hypothesised_typology[0]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "hypothesised_typology[0]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'",
+  "hypothesised_typology[1]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:016'",
+  "hypothesised_typology[2]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:017'",
+  "supporting_evidence[0]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "supporting_evidence[0]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "supporting_evidence[0]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "supporting_evidence[1]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'",
+  "supporting_evidence[4]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'",
+  "counter_evidence[2]: unknown tool call 'find_cycles:call_00_Brh5d24IXsWFb0IbhS2162'",
+  "counter_evidence[4]: malformed tool citation: 'ref:sar-faqs-october-2025:002'",
+  "recommended_next_steps[0]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "recommended_next_steps[0]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'",
+  "recommended_next_steps[1]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'",
+  "recommended_next_steps[2]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'",
+  "recommended_next_steps[2]: unknown tool call 'find_cycles:call_00_Brh5d24IXsWFb0IbhS2162'",
+  "recommended_next_steps[3]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'",
+  "recommended_next_steps[3]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'"
+ ],
+ "tool_calls": 8
+}

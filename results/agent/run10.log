@@ -1,0 +1,116 @@
+[run] alert 5461671 (package_15_row5461671.json)
+[done] alert 5461671: FAIL status=draft claims=35 tools=8 flags=7 -> alert_5461671__run_20261124T121306Z-57532.json
+       ! hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! hypothesised_typology[2]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:000'
+       ! counter_evidence[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 6745789 (package_19_row6745789.json)
+[done] alert 6745789: FAIL status=draft claims=39 tools=7 flags=4 -> alert_6745789__run_20261124T121416Z-58836.json
+       ! summary[2]: unknown passage 'call_01_SSomlH7gestxn5dMKctS0980'
+       ! summary[2]: unknown passage 'call_00_77tobhvx6V8kU4lncIIN9343'
+       ! summary[3]: unknown passage 'call_02_QiEiznk0raHXXXXPMT4a3108'
+       ! observed_facts[8]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! observed_facts[9]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! observed_facts[9]: unknown passage 'call_01_xsXuKrxC9dF6XYlKNJvo8070'
+       ! observed_facts[10]: unknown passage 'call_01_xsXuKrxC9dF6XYlKNJvo8070'
+       ! observed_facts[11]: unknown passage 'call_00_77tobhvx6V8kU4lncIIN9343'
+       ! hypothesised_typology[2]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! hypothesised_typology[2]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! supporting_evidence[3]: unknown tool call 'case:row3582143'
+       ! supporting_evidence[3]: unknown tool call 'case:row3698675'
+       ! counter_evidence[2]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! counter_evidence[2]: unknown passage 'call_01_xsXuKrxC9dF6XYlKNJvo8070'
+       ! counter_evidence[2]: unknown passage 'call_00_77tobhvx6V8kU4lncIIN9343'
+       ! counter_evidence[4]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! counter_evidence[4]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[5]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:000'
+       ! counter_evidence[5]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! recommended_next_steps[0]: unknown passage 'call_00_77tobhvx6V8kU4lncIIN9343'
+       ! recommended_next_steps[1]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! recommended_next_steps[2]: unknown passage 'call_00_UbeXFt8rwdWqpEToiio44435'
+       ! recommended_next_steps[2]: unknown passage 'call_01_xsXuKrxC9dF6XYlKNJvo8070'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 2959857 (package_01_row2959857.json)
+[done] alert 2959857: FAIL status=draft claims=37 tools=8 flags=7 -> alert_2959857__run_20261124T121534Z-60356.json
+       ! hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[3]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 4416924 (package_09_row4416924.json)
+[done] alert 4416924: FAIL status=draft claims=39 tools=8 flags=9 -> alert_4416924__run_20261124T121637Z-61524.json
+       ! summary[2]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! summary[2]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! observed_facts[1]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! observed_facts[2]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! observed_facts[2]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! observed_facts[3]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! observed_facts[3]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! observed_facts[4]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! observed_facts[5]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! observed_facts[5]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'
+       ! observed_facts[6]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'
+       ! observed_facts[7]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! observed_facts[8]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! hypothesised_typology[0]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! hypothesised_typology[0]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! hypothesised_typology[0]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! hypothesised_typology[0]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'
+       ! hypothesised_typology[1]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:016'
+       ! hypothesised_typology[2]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:017'
+       ! supporting_evidence[0]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! supporting_evidence[0]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! supporting_evidence[0]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! supporting_evidence[1]: unknown passage 'call_01_vTPDTXZnvbbhreLBwM7l3525'
+       ! supporting_evidence[4]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'
+       ! counter_evidence[2]: unknown tool call 'find_cycles:call_00_Brh5d24IXsWFb0IbhS2162'
+       ! counter_evidence[4]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! recommended_next_steps[0]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! recommended_next_steps[0]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'
+       ! recommended_next_steps[1]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+       ! recommended_next_steps[2]: unknown passage 'call_00_Qg95dGAW1sfKhP4T4Ff84109'
+       ! recommended_next_steps[2]: unknown tool call 'find_cycles:call_00_Brh5d24IXsWFb0IbhS2162'
+       ! recommended_next_steps[3]: unknown passage 'call_01_8c0IPhgaa1Nwk1SZufbr3281'
+       ! recommended_next_steps[3]: unknown passage 'call_00_bfQGTEOuSUplMZXIeF8P0005'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 3044518 (package_02_row3044518.json)
+[done] alert 3044518: FAIL status=draft claims=34 tools=6 flags=5 -> alert_3044518__run_20261124T121747Z-62726.json
+       ! summary[0]: package path does not exist: 'transaction.is_cross_bank'
+       ! observed_facts[0]: package path does not exist: 'transaction.is_cross_bank'
+       ! hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[3]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 5387721 (package_14_row5387721.json)
+[done] alert 5387721: FAIL status=draft claims=38 tools=8 flags=4 -> alert_5387721__run_20261124T121852Z-64014.json
+       ! hypothesised_typology[2]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[3]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[3]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:020'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 6195450 (package_17_row6195450.json)
+[done] alert 6195450: FAIL status=draft claims=35 tools=6 flags=4 -> alert_6195450__run_20261124T121959Z-65252.json
+       ! counter_evidence[6]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[6]: unknown tool call 'case:row4938320'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 6030889 (package_16_row6030889.json)
+[done] alert 6030889: FAIL status=draft claims=36 tools=6 flags=7 -> alert_6030889__run_20261124T122047Z-66175.json
+       ! hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! counter_evidence[2]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 4950559 (package_12_row4950559.json)
+[done] alert 4950559: FAIL status=draft claims=37 tools=7 flags=5 -> alert_4950559__run_20261124T122147Z-67371.json
+       ! hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+       ! hypothesised_typology[2]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:034'
+       ! counter_evidence[3]: malformed tool citation: 'ref:sar-faqs-october-2025:002'
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===
+[run] alert 5187543 (package_13_row5187543.json)
+[done] alert 5187543: FAIL status=insufficient_evidence claims=0 tools=8 flags=6 -> alert_5187543__run_20261124T122239Z-68430.json
+       ! model output is not valid JSON: Expecting value: line 1 column 1 (char 0)
+[summary] 1 run(s), 1 problem(s)
+=== exit 1 ===

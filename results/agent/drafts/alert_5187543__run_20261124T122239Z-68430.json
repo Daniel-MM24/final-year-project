@@ -1,0 +1,31 @@
+{
+ "draft": {
+  "alert_id": "5187543",
+  "counter_evidence": [],
+  "flags": [
+   "tool result injection-like text in search_corpus:call_03_Nh4MHa30e72RfAj5zgwF8417: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_03_Nh4MHa30e72RfAj5zgwF8417:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_03_Nh4MHa30e72RfAj5zgwF8417: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 0.932752}, ",
+   "tool result injection-like text in search_corpus:call_03_gzh3Nd3vkTcury4xQmKW7926: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_03_gzh3Nd3vkTcury4xQmKW7926:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_03_gzh3Nd3vkTcury4xQmKW7926: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 0.933657}, "
+  ],
+  "hypothesised_typology": [],
+  "label": "DRAFT for investigator review",
+  "missing": [
+   "model output is not valid JSON: Expecting value: line 1 column 1 (char 0)"
+  ],
+  "observed_facts": [],
+  "recommended_next_steps": [],
+  "run_id": "20261124T122239Z-68430",
+  "schema_version": "1.0",
+  "status": "insufficient_evidence",
+  "summary": [],
+  "supporting_evidence": []
+ },
+ "log_path": "results/agent/logs/alert_5187543__run_20261124T122239Z-68430.jsonl",
+ "problems": [
+  "model output is not valid JSON: Expecting value: line 1 column 1 (char 0)"
+ ],
+ "tool_calls": 8
+}

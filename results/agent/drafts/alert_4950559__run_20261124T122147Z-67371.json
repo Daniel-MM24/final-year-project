@@ -1,0 +1,349 @@
+{
+ "draft": {
+  "alert_id": "4950559",
+  "counter_evidence": [
+   {
+    "citations": [
+     "model.alert",
+     "model.raw_margin",
+     "model.rank_in_day",
+     "model.budget"
+    ],
+    "text": "The model did not alert on this row (model.alert false, raw_margin -8.7413065850731, rank_in_day 403144 against a budget of 200), so the alert is not model-driven and the case rests on manual pattern observation."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The stored golden label is 0 and is_laundering is 0, which is direct counter-evidence to a laundering conclusion for this row."
+   },
+   {
+    "citations": [
+     "find_cycles:call_01_uiW5xlS8GWKKqcw2W0zU5185",
+     "context.cycles"
+    ],
+    "text": "No directed cycles were found through 1964, so there is no evidence of funds returning to their origin."
+   },
+   {
+    "citations": [
+     "ref:sar-faqs-october-2025:002",
+     "features.fmt_cheque",
+     "features.fmt_cash"
+    ],
+    "text": "The structuring typology in the corpus is defined around currency transactions and CTR evasion; the alerted edge is cheque-format and non-cash, so the structuring framing is not directly supported by these facts."
+   },
+   {
+    "citations": [
+     "context.sender_history.out.amount_max",
+     "context.receiver_history.out.amount_max",
+     "transaction.amount_usd"
+    ],
+    "text": "The amounts involved are small relative to the accounts' own maxima: the sender's out amount_max is 2379736.628605761 and the receiver's out amount_max is 1338087.7423887814, so the recurring small amounts are not the dominant flow."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "The provenance record notes that original amount and currency are not carried through to the canonical table, so the USD figures may not reflect the original transaction currency."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "The provenance record notes that no SHAP drivers are stored, so the drivers behind the stored features cannot be inspected directly."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "The account history queries were truncated (truncated true for both 1964 and 11338), so the full counterparty set and the complete recurrence pattern have not been enumerated."
+   }
+  ],
+  "flags": [
+   "tool result injection-like text in search_corpus:call_02_yVOwnRPMeOk9wD2MXIKo8001: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_02_yVOwnRPMeOk9wD2MXIKo8001:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_02_yVOwnRPMeOk9wD2MXIKo8001: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 1.0}, {\"pas",
+   "No prompt-injection attempts were observed in the evidence package or in any tool result during this run.",
+   "Tool results were returned wrapped in untrusted-data markers and were treated as data only."
+  ],
+  "hypothesised_typology": [
+   {
+    "citations": [
+     "context.subgraph.inbound_to_sender[0].amount_usd",
+     "context.subgraph.outbound_from_receiver[1].amount_usd",
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "Hypothesis: repeated fixed-amount transfers between a small, closed set of counterparties on both sides of account 1964 and 11338 are consistent with layering through pass-through accounts, where value is fragmented into recurring identical amounts rather than moved in one lump sum."
+   },
+   {
+    "citations": [
+     "ref:sar-faqs-october-2025:002",
+     "features.fmt_cash",
+     "features.fmt_cheque"
+    ],
+    "text": "Hypothesis: the recurring identical amounts could reflect structuring-like fragmentation, but the corpus definition of structuring is specific to currency transactions intended to evade CTR reporting requirements, which is a materially different fact pattern from these non-cash, cross-bank transfers."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "context.fan_star.out_degree",
+     "ref:explanatory-note-for-revised-r-16:034"
+    ],
+    "text": "Hypothesis: the young account ages (6 days each) combined with high fan-out (out_degree 84) are consistent with mule-account behaviour described in the reference material on payment chains and intermediaries."
+   }
+  ],
+  "label": "DRAFT for investigator review",
+  "missing": [],
+  "observed_facts": [
+   {
+    "citations": [
+     "transaction.amount_usd",
+     "transaction.ts_ns",
+     "transaction.payment_format",
+     "transaction.from_bank",
+     "transaction.to_bank",
+     "features.is_cross_bank"
+    ],
+    "text": "The alerted transfer is 487.9306301437207 USD from 1964 to 11338 at ts_ns 1662576840000000000 (2022-09-07), payment format \"4\", cross-bank (bank 3 to bank 54)."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "The identical amount 487.9306301437207 USD was sent from 1964 to 11338 on two earlier occasions: row 3986975 at ts_ns 1662448680000000000 and row 3157136 at ts_ns 1662337860000000000."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "The 1964 -> 11338 pair also repeats two other exact amounts: 2059.1047562770214 USD (rows 3986974 and 3157135) and 134.74337934732574 USD (rows 3986976 and 3157137)."
+   },
+   {
+    "citations": [
+     "context.subgraph.inbound_to_sender[0].amount_usd",
+     "context.subgraph.inbound_to_sender[1].amount_usd",
+     "context.subgraph.inbound_to_sender[4].amount_usd",
+     "context.subgraph.inbound_to_sender[5].amount_usd",
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362"
+    ],
+    "text": "Inbound to 1964, the same exact amounts recur from the same counterparties: 245.82845076333132 USD and 1398.2306061935512 USD from account 1850 (rows 3727298, 3727299, 4053234, 4053235, 4445701, 4445702), and 515.5261304796588 USD and 65.84251226651216 USD from account 1009 (rows 4345227, 4345228, 4537686, 4537687, 3421935, 3421936)."
+   },
+   {
+    "citations": [
+     "context.subgraph.outbound_from_receiver[1].amount_usd",
+     "context.subgraph.outbound_from_receiver[2].amount_usd",
+     "context.subgraph.outbound_from_receiver[3].amount_usd",
+     "context.subgraph.outbound_from_receiver[5].amount_usd",
+     "context.subgraph.outbound_from_receiver[6].amount_usd",
+     "context.subgraph.outbound_from_receiver[0].amount_usd",
+     "context.subgraph.outbound_from_receiver[4].amount_usd",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "Outbound from 11338, the same exact amounts recur to the same counterparties: 2796.3323162071893, 164.36606505826057 and 39.371924046179195 USD to account 38290; 2845.7464244520515 and 690.6022963052432 USD to account 30663; 605.765174253357 USD to account 311158; and 33.52472461194008 USD to account 74313."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "context.sender_history.out.txn_count",
+     "context.sender_history.in.txn_count",
+     "get_neighbours:call_00_ZDQ00un0NwkWlc5kwhD40983"
+    ],
+    "text": "Account 1964 has 92 matching prior transfers before 2022-09-07, with 84 outgoing and 21 incoming in the receiver/sender history aggregates; the neighbourhood query returns 8 inbound and 15 outbound edges within the 24/48-hour windows, with all-time out-degree 76 and in-degree 17."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071",
+     "context.receiver_history.out.txn_count",
+     "context.receiver_history.in.txn_count",
+     "context.receiver_history.out.distinct_counterparties",
+     "context.receiver_history.in.distinct_counterparties",
+     "context.receiver_history.out.cross_bank_frac",
+     "context.receiver_history.in.cross_bank_frac"
+    ],
+    "text": "Account 11338 has 52 matching prior transfers before 2022-09-07; its history shows 42 outgoing and 20 incoming transactions with 8 and 6 distinct counterparties respectively, and cross-bank fractions of 0.9761904761904762 (out) and 0.95 (in)."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "context.sender_history.first_seen_ns",
+     "context.receiver_history.first_seen_ns"
+    ],
+    "text": "Both accounts are young: from_age_days is 6 and to_age_days is 6, and both first_seen_ns values fall in the same period (1661990760000000000 for the sender, 1661990580000000000 for the receiver)."
+   },
+   {
+    "citations": [
+     "context.fan_star.fan_in_star",
+     "context.fan_star.fan_out_star",
+     "context.fan_star.in_degree",
+     "context.fan_star.out_degree"
+    ],
+    "text": "The fan structure is flagged on both sides: fan_in_star is true and fan_out_star is true, with in_degree 21 and out_degree 84."
+   },
+   {
+    "citations": [
+     "find_cycles:call_01_uiW5xlS8GWKKqcw2W0zU5185",
+     "context.cycles"
+    ],
+    "text": "No directed cycles were found through account 1964 (n_matching 0), and the evidence package records an empty cycles list."
+   },
+   {
+    "citations": [
+     "features.fmt_cheque",
+     "features.fmt_ach",
+     "features.fmt_cash",
+     "features.fmt_credit_card",
+     "features.fmt_reinvestment",
+     "features.fmt_wire"
+    ],
+    "text": "The payment format mix on the alerted edge is cheque only: fmt_cheque is 1 while fmt_ach, fmt_cash, fmt_credit_card, fmt_reinvestment and fmt_wire are all 0."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The golden label for this row is 0 and is_laundering is 0 in the stored features."
+   },
+   {
+    "citations": [
+     "get_bank_stats:call_02_SayJtHuV3NQaAHGQaI334278"
+    ],
+    "text": "Bank 3, the sender's bank, has 27238 transactions before 2022-09-07 with 1017 distinct accounts and 654 counterparty banks; bank 54 appears among its counterparties with 312 transactions totalling 8745282.38 USD."
+   }
+  ],
+  "recommended_next_steps": [
+   {
+    "citations": [
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "Pull the complete, untruncated transaction history for accounts 1964 and 11338 to enumerate every recurring exact amount and confirm whether the repetition extends beyond the truncated window."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Obtain KYC and onboarding records for accounts 1964 and 11338, both of which are 6 days old, to establish account holder identity, stated purpose and expected activity."
+   },
+   {
+    "citations": [
+     "context.subgraph.inbound_to_sender[0].from",
+     "context.subgraph.inbound_to_sender[4].from",
+     "context.subgraph.outbound_from_receiver[1].to",
+     "context.subgraph.outbound_from_receiver[5].to",
+     "context.subgraph.outbound_from_receiver[0].to",
+     "context.subgraph.outbound_from_receiver[4].to"
+    ],
+    "text": "Review the counterparties 1850, 1009, 38290, 30663, 311158 and 74313 for shared ownership, shared devices or shared addresses with 1964 or 11338."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps",
+     "model.rank_in_day"
+    ],
+    "text": "Re-derive the model drivers from the stored features, since no SHAP drivers are stored, to understand why the model ranked this row at 403144 despite the recurring pattern."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps",
+     "transaction.row"
+    ],
+    "text": "Confirm the original amount and currency for row 4950559, which are not carried through to the canonical table."
+   },
+   {
+    "citations": [
+     "transaction.row",
+     "model.alert"
+    ],
+    "text": "A human investigator should decide whether the recurring exact-amount pattern warrants escalation; no escalation, closure or filing has been performed in this draft."
+   }
+  ],
+  "run_id": "20261124T122147Z-67371",
+  "schema_version": "1.0",
+  "status": "draft",
+  "summary": [
+   {
+    "citations": [
+     "transaction.amount_usd",
+     "transaction.from_account",
+     "transaction.to_account",
+     "transaction.from_bank",
+     "transaction.to_bank",
+     "transaction.payment_format",
+     "transaction.date",
+     "transaction.row",
+     "features.is_cross_bank"
+    ],
+    "text": "Alert 4950559 concerns a single transfer of 487.9306301437207 USD on 2022-09-07 from account 1964 at bank 3 to account 11338 at bank 54, payment format \"4\", cross-bank, canonical row 4950559."
+   },
+   {
+    "citations": [
+     "model.alert",
+     "model.raw_margin",
+     "model.threshold",
+     "model.rank_in_day",
+     "model.budget"
+    ],
+    "text": "The model did not alert on this row: model.alert is false, raw_margin is -8.7413065850731 against a threshold of 0.089399224210815, and rank_in_day is 403144 with a budget of 200."
+   },
+   {
+    "citations": [
+     "context.subgraph.inbound_to_sender[0].amount_usd",
+     "context.subgraph.inbound_to_sender[1].amount_usd",
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "The pattern that makes this row interesting is not the single amount but the repetition: the same small set of amounts recurs between the same counterparties across multiple days, in both directions of the 1964 -> 11338 relationship."
+   }
+  ],
+  "supporting_evidence": [
+   {
+    "citations": [
+     "get_account_history:call_00_Dc4I2X5bQmU5ChCSJ9uP1362",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071",
+     "context.subgraph.inbound_to_sender[0].amount_usd"
+    ],
+    "text": "Exact-amount recurrence is the strongest signal: at least three distinct amounts repeat exactly between 1964 and 11338, and at least four amounts repeat exactly on the inbound side from 1850 and 1009."
+   },
+   {
+    "citations": [
+     "context.subgraph.outbound_from_receiver[0].amount_usd",
+     "context.subgraph.outbound_from_receiver[1].amount_usd",
+     "context.subgraph.outbound_from_receiver[5].amount_usd",
+     "context.subgraph.outbound_from_receiver[4].amount_usd",
+     "get_account_history:call_01_8RmNEw7VNj29sK58cAXL8071"
+    ],
+    "text": "The receiver 11338 both receives from 1964 and pays out to a separate set of accounts (38290, 30663, 311158, 74313) in recurring exact amounts, which is the shape of a pass-through rather than an end beneficiary."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Both accounts are only 6 days old at the time of the alert, so the entire observed relationship formed within a very short window."
+   },
+   {
+    "citations": [
+     "context.fan_star.fan_in_star",
+     "context.fan_star.fan_out_star"
+    ],
+    "text": "The fan-in and fan-out star flags are both true, indicating concentrated many-to-one and one-to-many flows around the alerted edge."
+   }
+  ]
+ },
+ "log_path": "results/agent/logs/alert_4950559__run_20261124T122147Z-67371.jsonl",
+ "problems": [
+  "hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'",
+  "hypothesised_typology[2]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:034'",
+  "counter_evidence[3]: malformed tool citation: 'ref:sar-faqs-october-2025:002'"
+ ],
+ "tool_calls": 7
+}

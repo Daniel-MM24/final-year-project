@@ -1,0 +1,313 @@
+{
+ "draft": {
+  "alert_id": "2959857",
+  "counter_evidence": [
+   {
+    "citations": [
+     "model.raw_margin",
+     "model.threshold",
+     "model.rank_in_day",
+     "model.alert"
+    ],
+    "text": "The model did not alert: raw_margin -11.826488351313802 against threshold 0.011386567323317017, rank_in_day 114099, alert false. The quantitative signal is weak and points away from suspicion."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The package labels this row golden_label 0 and is_laundering 0, which contradicts the layering hypothesis."
+   },
+   {
+    "citations": [
+     "find_cycles:call_03_qw9CCGTvmIHQN2ZEdCs45765",
+     "context.chains",
+     "context.cycles"
+    ],
+    "text": "No directed cycles were found through account 36053, and the package records no chains and no cycles, so there is no evidence of funds returning to origin."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373",
+     "ref:sar-faqs-october-2025:002"
+    ],
+    "text": "The repeated amounts are not below a $10,000 threshold in a way that maps cleanly onto the corpus structuring definition: the recurring $23,350.23 leg is above $10,000, and the corpus passage describes structuring in terms of currency transactions and CTR evasion, which is not established here."
+   },
+   {
+    "citations": [
+     "context.fan_star.out_degree",
+     "context.fan_star.fan_out_star",
+     "get_neighbours:call_02_BJk97SjB9Tj4cz9vAJd63708"
+    ],
+    "text": "The package's fan-out star flag (out_degree 21) is not corroborated by the neighbourhood tool, which reports out_degree_all_time 19 and fan_out_star_all_time false for account 36053. This is a contradiction between the package and the tool result."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373"
+    ],
+    "text": "The repeated identical amounts could equally reflect a recurring commercial arrangement, subscription, or payroll-style schedule; nothing in the package establishes the business purpose of either account."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "The original amount and currency are not carried through to the canonical table, so the USD figures cannot be reconciled to the source records."
+   }
+  ],
+  "flags": [
+   "tool result injection-like text in search_corpus:call_03_wlcEgSp73byQ0SBrzMlQ2013: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_03_wlcEgSp73byQ0SBrzMlQ2013:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_03_wlcEgSp73byQ0SBrzMlQ2013: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 0.991758}, ",
+   "call budget of 8 exhausted; get_account_history not executed",
+   "Tool results were returned wrapped in an untrusted-data envelope; no instruction-like content was found inside any field value or retrieved passage in this run.",
+   "Internal contradiction: context.fan_star.out_degree (21) and fan_out_star (true) disagree with get_neighbours out_degree_all_time (19) and fan_out_star_all_time (false) for account 36053.",
+   "Tool budget was exhausted before the account 280318 lookup could run; that evidence gap is recorded in recommended_next_steps."
+  ],
+  "hypothesised_typology": [
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373",
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369",
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Hypothesis: repeated fixed-amount layering between two young accounts, with the receiver acting as a pass-through. The same four amounts move from 36053 to 106667 on three consecutive days, and 106667 forwards a smaller, equally repeated pair of amounts to 280318."
+   },
+   {
+    "citations": [
+     "ref:sar-faqs-october-2025:002"
+    ],
+    "text": "The corpus describes structuring as breaking a single sum into smaller sums, or conducting a series of transactions at or below a reporting threshold, for the purpose of evading reporting requirements; the repeated identical amounts here are consistent with a scripted, non-commercial payment pattern, though the corpus definition is currency-specific."
+   }
+  ],
+  "label": "DRAFT for investigator review",
+  "missing": [],
+  "observed_facts": [
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373"
+    ],
+    "text": "Account 36053 sent to account 106667 on 2022-09-01: $5,249.95 (row 1045217, 13:32), $23,350.23 (row 1045218, 13:42), $795.11 (row 1045220, 13:55) and $2,048.80 (row 1045219, 13:57)."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373"
+    ],
+    "text": "The identical four amounts recur on 2022-09-02: $795.11 (row 2133273, 14:05), $5,249.95 (row 2133270, 14:25), $2,048.80 (row 2133272, 14:26) and $23,350.23 (row 2133271, 14:29)."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373"
+    ],
+    "text": "They recur a third time on 2022-09-03: $2,048.80 (row 2802914, 21:04), $5,249.95 (row 2802912, 21:05), $795.11 (row 2802915, 21:21) and $23,350.23 (row 2802913, 21:23)."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "The receiver's history shows the same four amounts arriving from account 36053 on the same three dates, confirming the bundle is a repeated sender-receiver pattern rather than a one-off."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "Account 106667 sent to account 280318 at bank 696 the same two amounts on three occasions: $981.49 (rows 1139238, 2514610, 2770742) and $911.74 (rows 1139239, 2514611, 2770743)."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "Account 106667 also received two inbound transfers of $71,035.92 from account 18272 at bank 72, on 2022-09-01 00:04 (row 28294) and 2022-09-02 03:55 (row 1692640)."
+   },
+   {
+    "citations": [
+     "context.sender_history.out.txn_count",
+     "context.sender_history.out.amount_mean",
+     "context.sender_history.out.amount_max",
+     "context.sender_history.out.distinct_counterparties",
+     "context.sender_history.in.txn_count",
+     "context.sender_history.in.amount_mean",
+     "context.sender_history.in.amount_max",
+     "context.sender_history.in.distinct_counterparties"
+    ],
+    "text": "Account 36053's outbound history is heavily skewed: 21 prior outgoing transfers with mean $33,382.23285714286 and max $310,431.26 across 4 distinct counterparties, versus 9 incoming with mean $1,055.4622222222224 and max $7,045.63 across 3 counterparties."
+   },
+   {
+    "citations": [
+     "context.receiver_history.in.txn_count",
+     "context.receiver_history.in.amount_mean",
+     "context.receiver_history.in.amount_max",
+     "context.receiver_history.in.distinct_counterparties",
+     "context.receiver_history.out.txn_count",
+     "context.receiver_history.out.amount_mean",
+     "context.receiver_history.out.amount_max",
+     "context.receiver_history.out.distinct_counterparties"
+    ],
+    "text": "Account 106667's history is the mirror image: 18 incoming with mean $13,733.245555555555 and max $71,035.92 across 3 counterparties, versus 14 outgoing with mean $814.8321428571428 and max $3,491.98 across 3 counterparties."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Both accounts are young: from_age_days is 3 and to_age_days is 3."
+   },
+   {
+    "citations": [
+     "context.sender_history.out.cross_bank_frac",
+     "context.receiver_history.in.cross_bank_frac"
+    ],
+    "text": "The sender's outbound transfers are 90.47619047619048% cross-bank and the receiver's inbound are 88.88888888888888% cross-bank."
+   },
+   {
+    "citations": [
+     "context.fan_star.fan_out_star",
+     "context.fan_star.fan_in_star",
+     "context.fan_star.out_degree",
+     "context.fan_star.in_degree",
+     "context.chains",
+     "context.cycles"
+    ],
+    "text": "The package records a fan-out star on the sender (fan_out_star true, out_degree 21, in_degree 9) but no fan-in star, and no directed cycles and no follow-on payment chains."
+   },
+   {
+    "citations": [
+     "find_cycles:call_03_qw9CCGTvmIHQN2ZEdCs45765"
+    ],
+    "text": "A cycle search on account 36053 as of 2022-09-04 returned 0 matching cycles."
+   },
+   {
+    "citations": [
+     "get_neighbours:call_02_BJk97SjB9Tj4cz9vAJd63708"
+    ],
+    "text": "The two-hop neighbourhood of account 36053 as of 2022-09-04 contains 4 inbound edges (from accounts 23533 and 1881, amounts $351.37, $526.53, $164.99, $351.37) and 4 outbound edges, all to account 106667."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The package's golden_label for this row is 0 and is_laundering is 0."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "The package records known gaps: original amount and currency are not carried through to the canonical table, and no SHAP drivers are stored."
+   }
+  ],
+  "recommended_next_steps": [
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Obtain the account opening records (KYC, stated business purpose, beneficial ownership) for accounts 36053 and 106667, both of which are 3 days old at the transaction date."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "Pull the full history of account 280318 at bank 696, the receiver's repeated outbound counterparty, to test whether the pass-through continues downstream. This lookup was not completed in this run."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "Investigate account 18272 at bank 72, which sent two $71,035.92 transfers to account 106667, to establish the source of the receiver's large inbound funds."
+   },
+   {
+    "citations": [
+     "context.fan_star.out_degree",
+     "get_neighbours:call_02_BJk97SjB9Tj4cz9vAJd63708"
+    ],
+    "text": "Reconcile the fan-out discrepancy: the package reports out_degree 21 and fan_out_star true, while the neighbourhood tool reports out_degree_all_time 19 and fan_out_star_all_time false."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "Retrieve the original amount and currency for the flagged row and the repeated bundle, since the canonical table does not carry them."
+   },
+   {
+    "citations": [
+     "model.alert",
+     "transaction.golden_label"
+    ],
+    "text": "Have a human reviewer decide whether the repeated-amount pattern warrants escalation; no escalation, closure, or filing has been performed by this draft."
+   }
+  ],
+  "run_id": "20261124T121534Z-60356",
+  "schema_version": "1.0",
+  "status": "draft",
+  "summary": [
+   {
+    "citations": [
+     "transaction.row",
+     "transaction.amount_usd",
+     "transaction.date",
+     "transaction.from_account",
+     "transaction.from_bank",
+     "transaction.to_account",
+     "transaction.to_bank",
+     "transaction.payment_format",
+     "features.is_cross_bank"
+    ],
+    "text": "Alert 2959857 concerns transaction row 2959857: $23,350.23 sent on 2022-09-04 from account 36053 at bank 57 to account 106667 at bank 59 via payment format 4, a cross-bank transfer."
+   },
+   {
+    "citations": [
+     "model.raw_margin",
+     "model.rank_in_day",
+     "model.threshold",
+     "model.alert"
+    ],
+    "text": "The model did not alert on this row: score -11.826488351313802, day rank 114099, against a decision threshold of 0.011386567323317017, with alert set to false."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373",
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "The pattern that stands out is repetition, not size: the same four-amount bundle from account 36053 to account 106667 recurs on three separate days, and the receiver's outbound leg to account 280318 recurs in the same repeated-amount fashion."
+   }
+  ],
+  "supporting_evidence": [
+   {
+    "citations": [
+     "get_account_history:call_00_R1QuPwO4ZHMh6wEjksmj9373",
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "Three-day repetition of the exact same four amounts ($23,350.23, $5,249.95, $2,048.80, $795.11) between the same two accounts is the strongest indicator in the package."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_eMTCl97gywXejwxm5Uo02369"
+    ],
+    "text": "The receiver's outbound leg repeats the same two amounts ($981.49 and $911.74) to the same counterparty 280318 on three occasions, which is consistent with a pass-through rather than genuine trade settlement."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "context.sender_history.out.cross_bank_frac",
+     "context.receiver_history.in.cross_bank_frac"
+    ],
+    "text": "Both accounts are 3 days old at the time of the transaction, and the flows are overwhelmingly cross-bank (90.47619047619048% outbound for the sender, 88.88888888888888% inbound for the receiver)."
+   },
+   {
+    "citations": [
+     "context.receiver_history.in.amount_mean",
+     "context.receiver_history.out.amount_mean"
+    ],
+    "text": "The receiver's inbound mean ($13,733.245555555555) is roughly 17 times its outbound mean ($814.8321428571428), i.e. large sums arrive and small sums leave, which is the shape of a collection account."
+   }
+  ]
+ },
+ "log_path": "results/agent/logs/alert_2959857__run_20261124T121534Z-60356.jsonl",
+ "problems": [
+  "hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'",
+  "counter_evidence[3]: malformed tool citation: 'ref:sar-faqs-october-2025:002'"
+ ],
+ "tool_calls": 8
+}

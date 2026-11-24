@@ -56,10 +56,65 @@ DEFAULT_BUDGET = 200
 # --- Table helpers -----------------------------------------------------------------
 
 
+_TABLE_CACHE: dict[tuple[int, int], pa.Table] = {}
+
+
 def _load_table(table: pa.Table | None) -> pa.Table:
+    """The canonical table, memoised on the file's (mtime_ns, size).
+
+    Every Stage 6 tool re-read the whole canonical parquet and rebuilt the canonical
+    id lookup (~11 s, ~4 GB transient). The agent issues up to 8 such calls per case,
+    which made a single draft run exceed the 7 GB ceiling. Caching one immutable
+    table per file version removes both costs; a rewritten file gets a new key so a
+    stale table can never be served.
+    """
     if table is not None:
         return table
-    return pq.read_table(CANONICAL_PATH)
+    st = CANONICAL_PATH.stat()
+    key = (st.st_mtime_ns, st.st_size)
+    cached = _TABLE_CACHE.get(key)
+    if cached is None:
+        _TABLE_CACHE.clear()
+        cached = pq.read_table(CANONICAL_PATH)
+        _TABLE_CACHE[key] = cached
+    return cached
+
+
+_LOOKUP_CACHE: dict[tuple, pa.Table] = {}
+
+
+def _canon_lookup(full: pa.Table) -> pa.Table:
+    """Distinct canonical ``_key`` -> minimum canonical row id, memoised per table.
+
+    Building this was 86% of a Stage 6 tool call (~11 s, 4 GB footprint) because it
+    string-casts and group-bys the whole canonical table on every call. The key is the
+    table's identity plus its fingerprint (row count, first/last ts, partition checksum
+    when the table carries one), so a filtered or rebuilt table gets its own entry and
+    a stale entry can never be reused. The canonical table itself is also retained by
+    ``_load_table``'s callers for the life of a process, so holding a lookup keyed on
+    it adds no retention.
+    """
+    fp = [full.num_rows]
+    for col in ("ts_ns",):
+        if col in full.column_names and full.num_rows:
+            fp += [int(pc.min(full[col]).as_py()), int(pc.max(full[col]).as_py())]
+    fp.append(id(full))
+    key = tuple(fp)
+    cached = _LOOKUP_CACHE.get(key)
+    if cached is not None:
+        return cached
+    k = lambda t: [pc.cast(t[c], pa.string()) if c != "amount_usd"
+                   else pc.cast(pc.round(t[c], 6), pa.string())
+                   for c in ("from_account", "to_account", "ts_ns", "amount_usd")]
+    canon_keys = pa.Table.from_arrays(
+        [pc.binary_join_element_wise(*k(full), "\x1f"),
+         pa.array(np.arange(full.num_rows, dtype=np.int64))],
+        names=["_key", "_row"])
+    lookup = canon_keys.group_by("_key").aggregate([("_row", "min")]).select(["_key", "_row_min"])
+    if len(_LOOKUP_CACHE) >= 4:
+        _LOOKUP_CACHE.pop(next(iter(_LOOKUP_CACHE)))
+    _LOOKUP_CACHE[key] = lookup
+    return lookup
 
 
 def _as_of(table: pa.Table, ts_ns: int, full: pa.Table) -> pa.Table:
@@ -79,11 +134,7 @@ def _as_of(table: pa.Table, ts_ns: int, full: pa.Table) -> pa.Table:
                      for c in ("from_account", "to_account", "ts_ns", "amount_usd")]
     merged = pa.Table.from_arrays(
         [pc.binary_join_element_wise(*key(hist), "\x1f")], names=["_key"])
-    canon_keys = pa.Table.from_arrays(
-        [pc.binary_join_element_wise(*key(full), "\x1f"),
-         pa.array(np.arange(full.num_rows, dtype=np.int64))],
-        names=["_key", "_row"])
-    lookup = canon_keys.group_by("_key").aggregate([("_row", "min")])
+    lookup = _canon_lookup(full)
     # A many-to-many left-outer join does not preserve left-row order, so joining and
     # appending the joined column would pair ids with the wrong history rows. Resolve
     # element-wise instead: index_in/take keep ``hist`` row order exactly.

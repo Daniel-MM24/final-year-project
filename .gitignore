@@ -26,3 +26,6 @@ vault/
 # Per-machine agent configuration.
 .claude/
 CLAUDE.md
+
+# Local environment variables. Do not commit secrets to git.
+.env

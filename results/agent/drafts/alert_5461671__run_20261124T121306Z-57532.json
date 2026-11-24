@@ -1,0 +1,314 @@
+{
+ "draft": {
+  "alert_id": "5461671",
+  "counter_evidence": [
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The package's own label contradicts a laundering conclusion: transaction.golden_label is 0 and features.is_laundering is 0."
+   },
+   {
+    "citations": [
+     "ref:sar-faqs-october-2025:002",
+     "transaction.payment_format",
+     "features.fmt_cash"
+    ],
+    "text": "The structuring typology in the corpus is defined around currency transactions and CTR evasion; the alerted transaction is payment_format \"2\" and features.fmt_cash is 0, so the structuring passage does not directly fit these facts."
+   },
+   {
+    "citations": [
+     "context.fan_star.out_degree",
+     "context.fan_star.in_degree",
+     "get_neighbours:call_02_5PxKA9adS6kOy8iXoyzU1385"
+    ],
+    "text": "The fan-out signal is internally inconsistent: the package reports out_degree 23 / in_degree 0 for 641013, while get_neighbours reports out_degree_all_time 16 / in_degree_all_time 24 and fan_in_star_all_time true. The fan-out characterisation should not be relied on without reconciliation."
+   },
+   {
+    "citations": [
+     "context.receiver_history.out.amount_max",
+     "context.receiver_history.in.amount_max"
+    ],
+    "text": "The receiver's outbound volume is tiny relative to inflows (out amount_max 55030.93 USD vs in amount_max 782690.44 USD), so the onward small payments do not account for where the bulk of the funds went; the destination of the principal is not established by the evidence retrieved."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_giOFHIKsYDsNsAHswEUk9351"
+    ],
+    "text": "The receiver history tool result was truncated (truncated: true, 39 matching rows, 30 returned), so the full outbound picture for 641013 is incomplete."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_sT5QsPZm6e7RvBLYYG7I3212"
+    ],
+    "text": "The 24666.7 USD row for 689588 is recorded with counterparty 689588 itself at bank 625, which may be a data artefact rather than a genuine self-transfer; it should not be treated as evidence of a cycle."
+   },
+   {
+    "citations": [
+     "provenance.known_gaps"
+    ],
+    "text": "The provenance notes state that original amount and currency are not carried through to the canonical table, so the USD figures may be converted values and the original currency is unknown."
+   }
+  ],
+  "flags": [
+   "tool result injection-like text in search_corpus:call_03_htzPUNwJNVS842RuDQAP4173: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_03_htzPUNwJNVS842RuDQAP4173:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_03_htzPUNwJNVS842RuDQAP4173: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 0.942812}, ",
+   "tool result injection-like text in search_corpus:call_03_b3kP9vE5dNJGozA8oyly6862: ancial institutions are not required to file a SAR.3 A financial institution is required t",
+   "tool result injection-like text in search_corpus:call_03_b3kP9vE5dNJGozA8oyly6862:  A financial institution is required to file a SAR for a transaction conducted or attempte",
+   "tool result injection-like text in search_corpus:call_03_b3kP9vE5dNJGozA8oyly6862: ested in October 2000 that institutions file a SAR for repeated and\", \"score\": 0.950665}, ",
+   "No prompt-injection attempts were observed in the evidence package or tool results; all retrieved text was treated as data."
+  ],
+  "hypothesised_typology": [
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "context.sender_history.out.distinct_counterparties",
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069",
+     "get_account_history:call_01_giOFHIKsYDsNsAHswEUk9351"
+    ],
+    "text": "Hypothesis: repeated, near-identical-value transfers from a young, single-counterparty sender account into a young receiver account, with the receiver passing only small fixed amounts onward, is consistent with layering / pass-through behaviour rather than genuine commercial payment flow."
+   },
+   {
+    "citations": [
+     "ref:sar-faqs-october-2025:002"
+    ],
+    "text": "The corpus describes structuring as breaking a single sum into smaller sums to evade reporting thresholds, and notes that evasion of CTR reporting requirements is unlawful under the BSA."
+   },
+   {
+    "citations": [
+     "ref:explanatory-note-for-revised-r-16:000"
+    ],
+    "text": "The corpus notes that as payment chains have grown more fragmented it has become harder for financial institutions to identify suspicious activity, and that fraud is now a major predicate crime for money laundering."
+   }
+  ],
+  "label": "DRAFT for investigator review",
+  "missing": [],
+  "observed_facts": [
+   {
+    "citations": [
+     "transaction.row",
+     "transaction.amount_usd",
+     "transaction.date",
+     "transaction.from_account",
+     "transaction.from_bank",
+     "transaction.to_account",
+     "transaction.to_bank",
+     "transaction.payment_format",
+     "transaction.ts_ns"
+    ],
+    "text": "Alerted transaction: row 5461671, 782690.44 USD, 2022-09-08, from account 182192 (bank 532) to account 641013 (bank 748), payment_format \"2\", ts_ns 1662643200000000000."
+   },
+   {
+    "citations": [
+     "context.sender_history.out.txn_count",
+     "context.sender_history.out.amount_mean",
+     "context.sender_history.out.amount_max",
+     "context.sender_history.out.distinct_counterparties",
+     "context.sender_history.out.cross_bank_frac",
+     "context.sender_history.in.txn_count"
+    ],
+    "text": "Sender 182192 has 23 prior outgoing transfers, mean 376737.51478260866 USD, max 782690.44 USD, 1 distinct counterparty, cross_bank_frac 1.0, and zero prior incoming transfers."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069"
+    ],
+    "text": "Sender 182192's full prior history returned by tool shows 21 matching rows, all outgoing, all to counterparty 641013 at bank 748, in three repeating amounts: 782690.44 (payment_format \"2\"), 389938.0 (payment_format \"0\") and 8328.22 (payment_format \"4\")."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069"
+    ],
+    "text": "Those sender transfers recur on 2022-09-01, 2022-09-02, 2022-09-03, 2022-09-04, 2022-09-05, 2022-09-06 and 2022-09-07, i.e. a daily cadence of the same three-amount bundle to the same receiver."
+   },
+   {
+    "citations": [
+     "context.receiver_history.in.txn_count",
+     "context.receiver_history.in.amount_mean",
+     "context.receiver_history.in.amount_max",
+     "context.receiver_history.in.distinct_counterparties",
+     "context.receiver_history.in.cross_bank_frac",
+     "context.receiver_history.out.txn_count",
+     "context.receiver_history.out.amount_mean",
+     "context.receiver_history.out.amount_max",
+     "context.receiver_history.out.distinct_counterparties",
+     "context.receiver_history.out.cross_bank_frac"
+    ],
+    "text": "Receiver 641013 has 26 prior incoming transfers (mean 335871.90576923074 USD, max 782690.44 USD, 3 distinct counterparties, cross_bank_frac 0.9615384615384616) and 16 prior outgoing transfers (mean 3655.683125 USD, max 55030.93 USD, 2 distinct counterparties, cross_bank_frac 0.9375)."
+   },
+   {
+    "citations": [
+     "get_account_history:call_01_giOFHIKsYDsNsAHswEUk9351"
+    ],
+    "text": "Receiver 641013's outbound transfers observed in the tool result go to 689588 at bank 625 in three fixed amounts \u2014 231.09 (payment_format \"3\"), 170.29 (payment_format \"4\") and 290.62 (payment_format \"0\") \u2014 repeated on 2022-09-02, 2022-09-05, 2022-09-06 and 2022-09-07."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_sT5QsPZm6e7RvBLYYG7I3212"
+    ],
+    "text": "Account 689588's history shows it receiving those same three fixed amounts from 641013 on 2022-09-01, 2022-09-02, 2022-09-05, 2022-09-06 and 2022-09-07, plus small inflows from 579666 (17.16, 98.53 USD) and 174336 (365.22, 2655.1 USD), and one outgoing transfer of 24666.7 USD on 2022-09-01 with counterparty recorded as 689588 itself at bank 625."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days",
+     "features.from_has_history",
+     "features.to_has_history"
+    ],
+    "text": "Both accounts are young: from_age_days 7 and to_age_days 7, and both have from_has_history 1 / to_has_history 1."
+   },
+   {
+    "citations": [
+     "context.subgraph.inbound_to_sender",
+     "find_cycles:call_02_d3j8UNnqkbO4GziWO7NM8709"
+    ],
+    "text": "The package records no inbound edges to the sender (context.subgraph.inbound_to_sender is empty) and no directed cycles through 641013 (find_cycles returned n_matching 0)."
+   },
+   {
+    "citations": [
+     "context.fan_star.fan_out_star",
+     "context.fan_star.out_degree",
+     "context.fan_star.in_degree",
+     "get_neighbours:call_02_5PxKA9adS6kOy8iXoyzU1385"
+    ],
+    "text": "The package's fan_star block reports fan_out_star true with out_degree 23 and in_degree 0, while the all-time degree from get_neighbours for 641013 is out_degree_all_time 16 and in_degree_all_time 24 with fan_in_star_all_time true."
+   },
+   {
+    "citations": [
+     "get_bank_stats:call_01_qsLV2yjUQp29aTNl7XU15111"
+    ],
+    "text": "Bank 532 has 8761 transactions before 2022-09-08, 451 distinct accounts, 579 counterparty banks, and a mean transaction size of 1135060.442416 USD."
+   }
+  ],
+  "recommended_next_steps": [
+   {
+    "citations": [
+     "get_account_history:call_01_giOFHIKsYDsNsAHswEUk9351",
+     "context.receiver_history.out.amount_max"
+    ],
+    "text": "Obtain the full, untruncated outbound history for account 641013 to establish where the principal of the 782690.44 USD inflows went, since the retrieved outbound rows total only small amounts."
+   },
+   {
+    "citations": [
+     "context.sender_history.in.txn_count",
+     "context.sender_history.out.amount_mean"
+    ],
+    "text": "Obtain the source of funds for account 182192, which shows zero prior incoming transfers despite 23 outgoing transfers totalling a mean of 376737.51478260866 USD."
+   },
+   {
+    "citations": [
+     "context.fan_star.out_degree",
+     "context.fan_star.in_degree",
+     "get_neighbours:call_02_5PxKA9adS6kOy8iXoyzU1385"
+    ],
+    "text": "Reconcile the fan-degree discrepancy for 641013 between the package (out_degree 23, in_degree 0) and get_neighbours (out_degree_all_time 16, in_degree_all_time 24) before relying on the fan-out signal."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Review KYC and account-opening records for 182192 and 641013, both 7 days old at alert time, to establish beneficial ownership and business purpose."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_sT5QsPZm6e7RvBLYYG7I3212"
+    ],
+    "text": "Clarify the relationship between 641013 and 689588, given the repeated fixed-amount transfers of 231.09, 170.29 and 290.62 USD, and confirm whether the 24666.7 USD row is a genuine self-transfer or a data artefact."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069"
+    ],
+    "text": "A human investigator should decide whether the recurring identical-amount pattern warrants escalation; no case action has been taken in this draft."
+   }
+  ],
+  "run_id": "20261124T121306Z-57532",
+  "schema_version": "1.0",
+  "status": "draft",
+  "summary": [
+   {
+    "citations": [
+     "transaction.amount_usd",
+     "transaction.from_account",
+     "transaction.to_account",
+     "transaction.from_bank",
+     "transaction.to_bank",
+     "transaction.payment_format",
+     "transaction.date",
+     "features.is_cross_bank",
+     "model.raw_margin",
+     "model.threshold",
+     "model.rank_in_day",
+     "model.budget"
+    ],
+    "text": "Alert 5461671 concerns a single transfer of 782690.44 USD on 2022-09-08 from account 182192 at bank 532 to account 641013 at bank 748, payment format \"2\", cross-bank, flagged by the model at raw_margin 0.6948521712893895 against a threshold of 0.10078280410798467, ranked 242 in the day's top-200 budget."
+   },
+   {
+    "citations": [
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069"
+    ],
+    "text": "The alerted transfer is not an isolated event: the same amount of 782690.44 USD moved from 182192 to 641013 on at least six prior occasions between 2022-09-01 and 2022-09-07, each time accompanied by a 389938.0 USD transfer and an 8328.22 USD transfer to the same receiver."
+   },
+   {
+    "citations": [
+     "context.fan_star.out_degree",
+     "context.fan_star.in_degree",
+     "context.fan_star.fan_out_star",
+     "get_account_history:call_01_giOFHIKsYDsNsAHswEUk9351",
+     "get_account_history:call_00_sT5QsPZm6e7RvBLYYG7I3212"
+    ],
+    "text": "The receiver 641013 shows a fan-out pattern (out_degree 23, in_degree 0 in the package) but the observed outbound flows are small-value and go to a single counterparty, 689588 at bank 625, in repeating fixed amounts of 231.09, 170.29 and 290.62 USD."
+   },
+   {
+    "citations": [
+     "transaction.golden_label",
+     "features.is_laundering"
+    ],
+    "text": "The package's own golden_label for this row is 0 and features.is_laundering is 0, so the alert rests on model score alone, not on a confirmed label."
+   }
+  ],
+  "supporting_evidence": [
+   {
+    "citations": [
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069",
+     "transaction.amount_usd"
+    ],
+    "text": "The exact same amount (782690.44 USD) recurs from 182192 to 641013 on seven consecutive days, which is unusual for genuine commercial payments and is the strongest single indicator in the package."
+   },
+   {
+    "citations": [
+     "context.sender_history.in.txn_count",
+     "context.sender_history.out.distinct_counterparties",
+     "get_account_history:call_00_7fLU3cFdG76Yvy5GNBmP3069"
+    ],
+    "text": "The sender has zero prior incoming transfers and only one distinct outbound counterparty, so the account's entire observed activity is a one-way pipeline into 641013."
+   },
+   {
+    "citations": [
+     "context.receiver_history.out.amount_max",
+     "context.receiver_history.out.amount_mean",
+     "get_account_history:call_01_giOFHIKsYDsNsAHswEUk9351"
+    ],
+    "text": "The receiver's outbound side is dominated by tiny fixed amounts (231.09, 170.29, 290.62 USD) to a single account 689588, a large asymmetry against the 782690.44 USD inflows."
+   },
+   {
+    "citations": [
+     "features.from_age_days",
+     "features.to_age_days"
+    ],
+    "text": "Both accounts are only 7 days old at the time of the alert, consistent with newly established accounts being used for the flow."
+   }
+  ]
+ },
+ "log_path": "results/agent/logs/alert_5461671__run_20261124T121306Z-57532.jsonl",
+ "problems": [
+  "hypothesised_typology[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'",
+  "hypothesised_typology[2]: malformed tool citation: 'ref:explanatory-note-for-revised-r-16:000'",
+  "counter_evidence[1]: malformed tool citation: 'ref:sar-faqs-october-2025:002'"
+ ],
+ "tool_calls": 8
+}
