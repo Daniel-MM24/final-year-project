@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Alert {{ pkg.alert_id }} — Alert Triage Viewer{% endblock %}
+{% block content %}
+{% set tx = pkg.transaction %}
+<h1>
+  Alert {{ pkg.alert_id }}
+  {% if pkg.positive %}<span class="badge badge-pos">positive</span>
+  {% else %}<span class="badge badge-neg">negative</span>{% endif %}
+</h1>
+<p class="caveat">{{ BANNER }} — score, rank and all evidence below refer to that one run.</p>
+
+<div class="grid">
+  <section class="panel">
+    <h3>Transaction</h3>
+    <dl class="kv">
+      <dt>Date</dt><dd>{{ tx.date }}</dd>
+      <dt>Amount (USD)</dt><dd>{{ "%.2f"|format(tx.amount_usd) }}</dd>
+      <dt>From</dt><dd>{{ tx.from_bank }}:{{ tx.from_account }}</dd>
+      <dt>To</dt><dd>{{ tx.to_bank }}:{{ tx.to_account }}</dd>
+      <dt>Payment format</dt><dd>{{ tx.payment_format }}</dd>
+      <dt>Golden label</dt><dd>{{ tx.golden_label }}</dd>
+    </dl>
+  </section>
+
+  <section class="panel">
+    <h3>Model position</h3>
+    <dl class="kv">
+      <dt>Alerted?</dt><dd>{{ "yes" if pkg.alerted else "no" }}</dd>
+      <dt>Raw margin</dt><dd>{{ "%.4f"|format(pkg.score) }}</dd>
+      <dt>Rank in day</dt><dd>{{ pkg.rank }} (budget {{ pkg.model.budget }})</dd>
+      <dt>Threshold</dt><dd>{{ "%.4f"|format(pkg.model.threshold) }}</dd>
+    </dl>
+    <p class="caveat">Raw margin is not a probability. Rank is within one trading day under
+       the budget shown. {{ BANNER }}</p>
+  </section>
+</div>
+
+<div class="grid">
+  <section class="panel">
+    <h3>Chains / hops</h3>
+    {% if pkg.context.chains %}
+      {% for chain in pkg.context.chains %}
+        <div class="claim">
+          <strong>chain {{ loop.index }}</strong>
+          <ul>
+          {% for hop in chain %}
+            <li>{{ hop.from_bank|default('?') }}:{{ hop.from_account|default('?') }}
+                → {{ hop.to_bank|default('?') }}:{{ hop.to_account|default('?') }}
+                <span class="unsupported">({{ hop.amount_usd|default('?') }})</span></li>
+          {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="unsupported">No multi-hop chain found for this edge.</p>
+    {% endif %}
+
+    <h3>Cycles</h3>
+    {% if pkg.context.cycles %}
+      <ul>{% for c in pkg.context.cycles %}<li>{{ c }}</li>{% endfor %}</ul>
+    {% else %}
+      <p class="unsupported">No cycles.</p>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <h3>Account neighbourhood</h3>
+    {% set fs = pkg.context.fan_star %}
+    <dl class="kv">
+      <dt>fan_star</dt><dd>{{ fs }}</dd>
+    </dl>
+    <h3>Sender / receiver history</h3>
+    <dl class="kv">
+      <dt>sender ({{ tx.from_account }})</dt><dd>{{ pkg.context.sender_history }}</dd>
+      <dt>receiver ({{ tx.to_account }})</dt><dd>{{ pkg.context.receiver_history }}</dd>
+    </dl>
+  </section>
+</div>
+
+<section class="panel">
+  <h3>Features ({{ pkg.features|length }} cols)</h3>
+  <table>
+    <tbody>
+    {% for k, v in pkg.features.items() %}
+      <tr id="ev-pkg-features-{{ k }}">
+        <td><code>features.{{ k }}</code></td>
+        <td>{{ v }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <h3>Drafts for this alert</h3>
+  {% if live %}
+    <form method="post" action="/alert/{{ pkg.alert_id }}/draft" style="margin-bottom:12px;">
+      <button class="draft" type="submit">Run live draft</button>
+      <span class="caveat">Calls the real agent ({{ "key present" if key_present else "no key in .env" }}). Writes a NEW draft + log; existing drafts are untouched.</span>
+    </form>
+  {% else %}
+    <button class="draft" type="button" disabled
+            title="Offline mode: drafting needs --live and a working API key">Run live draft</button>
+    <span class="caveat">Offline mode: drafting needs <code>--live</code> and a working API key.</span>
+  {% endif %}
+
+  {% if not drafts %}
+    <p class="unsupported" style="margin-top:12px;">No draft has been produced for this alert.</p>
+  {% else %}
+    <div class="draft-tabs">
+      {% for d in drafts %}
+        <a class="draft-tab {% if selected and selected.draft_id == d.draft_id %}active{% endif %}"
+           href="/alert/{{ pkg.alert_id }}?draft={{ d.draft_id }}">
+          {{ d.run_id }}
+          {% if d.clean %}<span class="badge badge-ok">clean</span>
+          {% elif d.status != 'draft' %}<span class="badge badge-fail">{{ d.status }}</span>
+          {% else %}<span class="badge badge-warn">{{ d.problems|length }} defects</span>{% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if selected %}
+    <p class="label-note">{{ selected.draft.label|default("Draft for human analyst review, not a decision.") }}</p>
+    <dl class="kv">
+      <dt>Run</dt><dd>{{ selected.run_id }}</dd>
+      <dt>Status</dt><dd>{{ selected.status }}</dd>
+      <dt>Problems</dt><dd>{{ selected.problems|length }}</dd>
+      <dt>Tool calls</dt><dd>{{ selected.tool_calls if selected.tool_calls is number else selected.tool_calls|length }}</dd>
+      <dt>Audit replay</dt>
+      <dd><a href="/alert/{{ pkg.alert_id }}/audit/{{ selected.draft_id }}">open JSONL replay →</a></dd>
+    </dl>
+
+    {% if selected.status != 'draft' %}
+      <p class="reasons">The agent produced no schema-valid draft on this run. Validator messages:
+        {% for p in selected.problems %}<br>• {{ p }}{% endfor %}</p>
+    {% endif %}
+
+    <p class="caveat">Claim status below is reconstructed from the validator's problem list:
+      a claim is <em>fail</em> if a problem names that section/index, otherwise <em>pass</em>
+      (the artifacts do not record a per-claim "pass" reason).</p>
+
+    {% for s in view.sections %}
+      {% if s.claims %}
+        <h3>{{ s.name }}</h3>
+        {% for c in s.claims %}
+          <div class="claim {{ c.status }}">
+            <div class="claim-text">{{ c.text }}</div>
+            {% if c.reasons %}
+              <div class="reasons">{% for r in c.reasons %}✗ {{ r }}<br>{% endfor %}</div>
+            {% endif %}
+            <div class="cites">
+              {% for cx in c.cites %}
+                {% if cx.res.ok %}
+                  <a class="cite" href="#{{ cx.res.anchor }}" title="resolved">{{ cx.cite }}</a>
+                {% else %}
+                  <span class="cite broken" title="{{ cx.res.reason }}">✗ {{ cx.cite }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    <h3>Evidence index (citation targets)</h3>
+    {% set ns = namespace(broken=0, ok=0) %}
+    {% for r in view.resolutions %}
+      {% if r.ok %}{% set ns.ok = ns.ok + 1 %}{% else %}{% set ns.broken = ns.broken + 1 %}{% endif %}
+      <div id="{{ r.anchor or '' }}" class="evidence-row {{ 'broken' if not r.ok else '' }}">
+        <code>{{ r.kind }}</code> <strong>{{ r.citation }}</strong>
+        {% if r.ok %}
+          <span class="unsupported">→</span>
+          <pre class="raw">{{ r.payload|string|truncate(240, True) }}</pre>
+        {% else %}
+          <span>✗ {{ r.reason }}</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <p class="caveat">Distinct citations: {{ ns.ok }} resolve, {{ ns.broken }} broken.</p>
+
+    <h3>Validator problems (raw)</h3>
+    {% if selected.problems %}
+      <pre class="raw">{% for p in selected.problems %}{{ p }}
+{% endfor %}</pre>
+    {% else %}
+      <p class="caveat">No validator problems recorded.</p>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

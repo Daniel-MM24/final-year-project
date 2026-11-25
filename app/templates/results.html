@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Results — Alert Triage Viewer{% endblock %}
+{% block content %}
+<h1>Results</h1>
+<p class="caveat">{{ BANNER }} — every number below refers to that one run and is not real-world evidence.
+   This tool is for human review only.</p>
+
+{% set r2 = ladder %}
+{% set r1 = ladder_r1 or {} %}
+{% set re = retrieval %}
+{% set cx = calibration %}
+
+<h2>Model (Stage 4 — Rung 2 LightGBM + hop features)</h2>
+<section class="panel">
+  <dl class="kv">
+    <dt>PR-AUC (mean)</dt><dd>{{ "%.4f"|format(r2.pr_auc_mean) if r2.pr_auc_mean is defined else "—" }}{% if r2.pr_auc_std is defined %} ± {{ "%.4f"|format(r2.pr_auc_std) }}{% endif %}</dd>
+    <dt>Lift</dt><dd>{{ "%.2f"|format(r2.lift_weighted) if r2.lift_weighted is defined else "—" }}×</dd>
+    <dt>Recall@100</dt><dd>{{ "%.4f"|format(r2.recall_at_k["100"]) if r2.recall_at_k is defined else "—" }}</dd>
+    <dt>Recall@1000</dt><dd>{{ "%.4f"|format(r2.recall_at_k["1000"]) if r2.recall_at_k is defined else "—" }}</dd>
+    <dt>Folds used</dt><dd>{{ r2.n_used if r2.n_used is defined else "—" }} / {{ r2.n_folds if r2.n_folds is defined else "—" }} (low-history: {{ r2.low_history|join(", ") if r2.low_history is defined else "—" }})</dd>
+  </dl>
+  <p class="caveat">Source: <code>results/ladder/rung2_lgbm_plus_hop_summary.json</code>.
+     Rung 1 (no hop features) was pr_auc {{ "%.4f"|format(r1.pr_auc_mean) if r1.pr_auc_mean is defined else "—" }},
+     lift {{ "%.2f"|format(r1.lift_weighted) if r1.lift_weighted is defined else "—" }}×.</p>
+  <p class="caveat-strong">
+    Recall@100 ≈ {{ "%.2f"|format(100*r2.recall_at_k["100"]) if r2.recall_at_k is defined else "—" }}%:
+    roughly <strong>80–97%</strong> of the top-100 alerts per day are false positives.
+    (Range documented in the Stage 4 model-ladder note; the app does not compute it here.)
+  </p>
+</section>
+
+<h2>Retrieval (Stage 6 — hybrid BM25 + hashed dense)</h2>
+<section class="panel">
+  <table>
+    <thead><tr><th>Method</th><th>Recall@5</th><th>MRR</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>hybrid</td>
+          <td>{{ "%.4f"|format(re.recall_at_5) if re.recall_at_5 is defined else "—" }}</td>
+          <td>{{ "%.4f"|format(re.mrr) if re.mrr is defined else "—" }}</td>
+          <td><code>results/retrieval/summary.json</code></td></tr>
+      {% if re.ablations is defined %}
+        {% for k, v in re.ablations.items() %}
+        <tr><td>{{ k }}</td>
+            <td>{{ "%.4f"|format(v.recall_at_5) }}</td>
+            <td>{{ "%.4f"|format(v.mrr) }}</td>
+            <td>ablation</td></tr>
+        {% endfor %}
+      {% endif %}
+      {% if retrieval_bge %}
+        {% set bge = retrieval_bge.ablations|default({}) %}
+        {% for k, v in bge.items() %}
+        <tr><td>BGE {{ k }}</td>
+            <td>{{ "%.4f"|format(v.recall_at_5) }}</td>
+            <td>{{ "%.4f"|format(v.mrr) }}</td>
+            <td>BGE experiment (null)</td></tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  {% if re.ablations is defined and re.ablations.bm25_only is defined and re.recall_at_5 is defined
+        and re.ablations.bm25_only.recall_at_5 > re.recall_at_5 %}
+    <p class="caveat-strong">BM25-only beats hybrid on recall@5
+       ({{ "%.4f"|format(re.ablations.bm25_only.recall_at_5) }} &gt; {{ "%.4f"|format(re.recall_at_5) }}) —
+       fusion is not justified by the measured data.</p>
+  {% endif %}
+  <p class="caveat">Corpus: {{ re.n_documents if re.n_documents is defined else "—" }} docs ·
+     {{ re.n_queries if re.n_queries is defined else "—" }} queries.
+     {{ re.label if re.label is defined else "" }}</p>
+</section>
+
+<h2>Calibration (Stage 4)</h2>
+<section class="panel">
+  {% if cx.pairs is defined and cx.pairs %}
+    {% set ns = namespace(bb=0, bp=0, bi=0, n=0) %}
+    {% for p in cx.pairs %}
+      {% set ns.bb = ns.bb + p.brier_before %}{% set ns.bp = ns.bp + p.brier_platt %}
+      {% set ns.bi = ns.bi + p.brier_isotonic %}{% set ns.n = ns.n + 1 %}
+    {% endfor %}
+    <dl class="kv">
+      <dt>Mean Brier (raw margin)</dt><dd>{{ "%.4f"|format(ns.bb / ns.n) }}</dd>
+      <dt>Mean Brier (Platt)</dt><dd>{{ "%.4f"|format(ns.bp / ns.n) }}</dd>
+      <dt>Mean Brier (isotonic)</dt><dd>{{ "%.4f"|format(ns.bi / ns.n) }}</dd>
+      <dt>Fit pairs</dt><dd>{{ ns.n }}</dd>
+    </dl>
+    <p class="caveat">Platt scaling brings the raw-margin Brier score down to roughly the
+       hold-out base rate; the model is a ranker and needs calibration to be read as a probability.
+       Source: <code>results/calibration/calibration.json</code>.</p>
+  {% else %}
+    <p class="unsupported">No calibration artifact found.</p>
+  {% endif %}
+</section>
+
+<h2>Agent drafts (Stage 7)</h2>
+<section class="panel">
+  <dl class="kv">
+    <dt>Total drafts</dt><dd>{{ stats.total }}</dd>
+    <dt>Clean (real draft, 0 problems)</dt><dd>{{ stats.clean }}</dd>
+    <dt>Real draft with ≥1 defect</dt><dd>{{ stats.defective }}</dd>
+    <dt>No usable draft (insufficient evidence)</dt><dd>{{ stats.insufficient }}</dd>
+  </dl>
+  <p class="caveat">"Insufficient evidence" includes model call failures (e.g. 401 from
+     an expired key) and JSON-parse failures; those runs produce no claims and no fake passes.
+     The saved drafts here are <strong>not</strong> a 10-draft sample: the actual saved set is
+     {{ stats.total }} drafts across {{ packages|length }} packaged alerts.</p>
+
+  <h3>Positives status</h3>
+  {% set total_pos = packages|selectattr("positive")|list|length %}
+  {% set pos_drafted = drafts|selectattr("alert_id", "in",
+        packages|selectattr("positive")|map(attribute="alert_id")|list)|list|length %}
+  <p>
+    {{ total_pos }} positive alerts are packaged. {{ pos_drafted }} of them have at least one draft run.
+    {% if pos_drafted == 0 %}
+      <strong>No positive-alert drafts exist.</strong> Positive alerts are packaged but undrafted, so
+      the agent has not been evaluated on a true positive.
+    {% elif pos_drafted < total_pos %}
+      {{ total_pos - pos_drafted }} positive alerts remain undrafted.
+    {% endif %}
+  </p>
+  <table>
+    <thead><tr><th>Alert</th><th>Positive?</th><th>Drafts</th><th>Statuses</th></tr></thead>
+    <tbody>
+    {% for p in packages|selectattr("positive")|list %}
+      {% set ds = drafts|selectattr("alert_id", "equalto", p.alert_id)|list %}
+      <tr>
+        <td><a href="/alert/{{ p.alert_id }}">{{ p.alert_id }}</a></td>
+        <td>yes</td>
+        <td>{{ ds|length }}</td>
+        <td>
+          {% if not ds %}<span class="badge badge-muted">undrafted</span>
+          {% else %}{% for d in ds %}<span class="badge badge-{{ 'ok' if d.clean else ('fail' if d.status != 'draft' else 'warn') }}">{{ d.status }}{% if d.problems %} · {{ d.problems|length }}p{% endif %}</span> {% endfor %}{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

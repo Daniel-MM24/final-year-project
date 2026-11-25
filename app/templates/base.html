@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Alert Triage Viewer{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="banner">{{ BANNER }} &mdash; all metrics, scores and drafts below refer to this one synthetic run.</div>
+
+  <header class="topbar">
+    <a href="/" class="brand">Alert Triage Viewer</a>
+    <nav>
+      <a href="/">Queue</a>
+      <a href="/results">Results</a>
+    </nav>
+    {% if MODE == "LIVE" and key_source is defined and key_source() %}
+      <span class="badge badge-muted" title="where live mode reads its API key">key: {{ key_source() }}</span>
+    {% endif %}
+    <span class="mode mode-{{ MODE|lower }}">{{ MODE }}</span>
+  </header>
+
+  {% if live is defined and not live %}
+    <div class="mode-note">
+      Offline mode: this app reads saved artifacts only. Drafting needs <code>--live</code> and a working API key.
+    </div>
+  {% elif live is defined and live and not key_present %}
+    <div class="mode-note warn">
+      Live mode requested, but no API key was found in <code>.env</code>. The Draft button is present but will fail.
+    </div>
+  {% endif %}
+
+  {% if live_error is defined and live_error %}
+    <div class="error-banner">Live draft error: {{ live_error }}</div>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>{{ BANNER }} — data is synthetic, from a single simulator run.
+       This tool is for human review only; it does not make decisions and is not production-ready.</p>
+  </footer>
+</body>
+</html>

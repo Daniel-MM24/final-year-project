@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Alert queue — Alert Triage Viewer{% endblock %}
+{% block content %}
+<h1>Alert queue <span class="unsupported">({{ rows|length }} saved packages)</span></h1>
+<p class="caveat">Synthetic data, single simulator run. Scores are LightGBM raw margins, not probabilities.
+   The queue covers only the 28 saved packages — no other alerts are shown.</p>
+
+<div class="controls">
+  <label>Label:
+    <select id="f-label">
+      <option value="">all</option>
+      <option value="pos">positive only</option>
+      <option value="neg">negative only</option>
+    </select>
+  </label>
+  <label>Draft:
+    <select id="f-draft">
+      <option value="">all</option>
+      <option value="yes">has draft</option>
+      <option value="no">no draft</option>
+      <option value="clean">clean draft</option>
+      <option value="defective">defective draft</option>
+      <option value="insufficient">insufficient evidence</option>
+    </select>
+  </label>
+</div>
+
+<table id="queue">
+  <thead>
+    <tr>
+      <th data-k="id">Alert</th>
+      <th data-k="label">Label</th>
+      <th data-k="score">Model score <span class="unsupported">(raw margin)</span></th>
+      <th data-k="rank">Rank in day</th>
+      <th data-k="draft">Draft</th>
+      <th data-k="validator">Validator</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in rows %}
+    <tr
+      data-label="{{ 'pos' if r.pkg.positive else 'neg' }}"
+      data-draft="{{ 'yes' if r.drafts else 'no' }}"
+      data-clean="{{ '1' if r.drafts|selectattr('clean')|list else '0' }}"
+      data-defective="{{ '1' if r.drafts|selectattr('status','equalto','draft')|selectattr('problems')|list else '0' }}"
+      data-insufficient="{{ '1' if r.drafts and (r.drafts|rejectattr('status','equalto','draft')|list|length == r.drafts|length) else '0' }}"
+    >
+      <td data-k="id"><a href="/alert/{{ r.pkg.alert_id }}">{{ r.pkg.alert_id }}</a></td>
+      <td data-k="label">
+        {% if r.pkg.positive %}<span class="badge badge-pos">positive</span>
+        {% else %}<span class="badge badge-neg">negative</span>{% endif %}
+      </td>
+      <td data-k="score">{{ "%.4f"|format(r.pkg.score) }}</td>
+      <td data-k="rank">{{ r.pkg.rank }}</td>
+      <td data-k="draft">{{ 'yes' if r.drafts else 'no' }}</td>
+      <td data-k="validator">
+        {% set s = r.draft_summary %}
+        <span class="badge badge-{{ s.tone }}">{{ s.status }}</span>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<script>
+(function () {
+  var tbody = document.querySelector('#queue tbody');
+  var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+  var sortKey = null, sortDir = 1;
+
+  function applyFilters() {
+    var lbl = document.getElementById('f-label').value;
+    var drf = document.getElementById('f-draft').value;
+    rows.forEach(function (tr) {
+      var ok = (!lbl || tr.dataset.label === lbl);
+      if (drf === 'yes') ok = ok && tr.dataset.draft === 'yes';
+      if (drf === 'no') ok = ok && tr.dataset.draft === 'no';
+      if (drf === 'clean') ok = ok && tr.dataset.clean === '1';
+      if (drf === 'defective') ok = ok && tr.dataset.defective === '1';
+      if (drf === 'insufficient') ok = ok && tr.dataset.insufficient === '1';
+      tr.style.display = ok ? '' : 'none';
+    });
+  }
+  document.getElementById('f-label').addEventListener('change', applyFilters);
+  document.getElementById('f-draft').addEventListener('change', applyFilters);
+
+  document.querySelectorAll('#queue th[data-k]').forEach(function (th) {
+    th.style.cursor = 'pointer';
+    th.addEventListener('click', function () {
+      var k = th.dataset.k;
+      if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = 1; }
+      rows.sort(function (a, b) {
+        var av = a.querySelector('[data-k="' + k + '"]').textContent.trim();
+        var bv = b.querySelector('[data-k="' + k + '"]').textContent.trim();
+        var an = parseFloat(av), bn = parseFloat(bv);
+        if (!isNaN(an) && !isNaN(bn)) return (an - bn) * sortDir;
+        return av.localeCompare(bv) * sortDir;
+      });
+      rows.forEach(function (tr) { tbody.appendChild(tr); });
+    });
+  });
+})();
+</script>
+{% endblock %}

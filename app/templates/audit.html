@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Audit replay — alert {{ pkg.alert_id }} — Alert Triage Viewer{% endblock %}
+{% block content %}
+<h1>Audit replay <span class="unsupported">alert {{ pkg.alert_id }} · run {{ dr.run_id }}</span></h1>
+<p class="caveat">This is a replay of the JSONL tool-call log the agent wrote. The validator
+   reads the same log. {{ BANNER }}</p>
+
+<dl class="kv" style="margin-bottom:16px;">
+  <dt>Status</dt><dd>{{ dr.status }}</dd>
+  <dt>Problems</dt><dd>{{ dr.problems|length }}</dd>
+  <dt>Tool calls</dt><dd>{{ dr.tool_calls if dr.tool_calls is number else dr.tool_calls|length }}</dd>
+  <dt>Back</dt><dd><a href="/alert/{{ pkg.alert_id }}?draft={{ dr.draft_id }}">← draft</a></dd>
+</dl>
+
+{% if not events %}
+  <p class="unsupported">No log file found for this draft (run logs are written only when a key was present).</p>
+{% else %}
+  <section class="panel">
+    {% for e in events %}
+      <div class="audit-event">
+        <span class="ts">{{ e.ts }}</span>
+        <span class="type">#{{ e.seq }} {{ e.type }}</span>
+        {{ e.summary }}
+        {% if e.type in ("model_message", "draft_parsed", "draft_validated", "run_end") %}
+          <details style="margin-top:4px;">
+            <summary class="unsupported">raw</summary>
+            <pre class="raw">{{ e.raw|tojson(indent=2)|truncate(2000, True) }}</pre>
+          </details>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}
+{% endblock %}
