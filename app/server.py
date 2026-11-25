@@ -286,21 +286,3 @@ def _audit_events(log: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def _short(x: Any) -> str:
     s = str(x) if x is not None else ""
     return s if len(s) <= 120 else s[:117] + "…"
-
-
-def _ladder_numbers() -> dict[str, Any]:
-    """The honest headline numbers, read from saved artifact files.
-
-    Where a number lives only in a markdown note (e.g. lift 59.6), we look for a
-    JSON next to it. If none exists, we return None so the template renders
-    "—" rather than a hardcoded value.
-    """
-    out: dict[str, Any] = {}
-    p = data.LADDER_DIR / "summary.json"
-    if p.is_file():
-        try:
-            import json as _json
-            out.update(_json.loads(p.read_text(encoding="utf-8")))
-        except Exception:
-            pass
-    return out
